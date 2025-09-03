@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBA Pre-Qualification Impact Study - Quiet Light Brokerage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a1a3d 0%, #1e3a5f 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            padding: 3rem 0;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        .key-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0a1a3d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .metric-detail {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        .nav-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .nav-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+            display: block;
+        }
+        
+        .nav-card:hover {
+            border-color: #297dde;
+            background: #f8fbff;
+            transform: translateX(5px);
+        }
+        
+        .nav-card h3 {
+            color: #0a1a3d;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .nav-card p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .dashboard-link {
+            display: inline-block;
+            background: #297dde;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0.5rem;
+            transition: background 0.3s;
+        }
+        
+        .dashboard-link:hover {
+            background: #1e5db8;
+        }
+        
+        .dashboard-link.secondary {
+            background: #36a157;
+        }
+        
+        .dashboard-link.secondary:hover {
+            background: #2c8446;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            opacity: 0.8;
+        }
+        
+        .insights-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .insights-section h2 {
+            color: #0a1a3d;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .insight-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .insight-item:last-child {
+            border-bottom: none;
+        }
+        
+        .insight-item h4 {
+            color: #297dde;
+            margin-bottom: 0.5rem;
+        }
+        
+        .insight-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SBA Pre-Qualification Impact Study</h1>
+            <p class="subtitle">Comprehensive Analysis of 251 Business Listings (2021-2024)</p>
+            <p class="subtitle">Quiet Light Brokerage Research</p>
+        </header>
+
+        <div class="key-metrics">
+            <div class="metric-card">
+                <div class="metric-value">24-30%</div>
+                <div class="metric-label">Inquiry Increase</div>
+                <div class="metric-detail">When SBA pre-qualification is advertised</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">83.3%</div>
+                <div class="metric-label">Success Rate</div>
+                <div class="metric-detail">SBA-eligible deals vs 75.5% non-eligible</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">43%</div>
+                <div class="metric-label">Usage Rate</div>
+                <div class="metric-detail">Despite clear benefits</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">54 Days</div>
+                <div class="metric-label">Faster Closing</div>
+                <div class="metric-detail">Overall time advantage for SBA deals</div>
+            </div>
+        </div>
+
+        <div class="nav-section" style="text-align: center;">
+            <h2 style="color: #0a1a3d; margin-bottom: 1.5rem;">Interactive Dashboards</h2>
+            <a href="dashboard.html" class="dashboard-link">View Main Dashboard</a>
+            <a href="cost-benefit.html" class="dashboard-link secondary">Cost-Benefit Analysis</a>
+        </div>
+
+        <div class="insights-section">
+            <h2>Key Insights</h2>
+            
+            <div class="insight-item">
+                <h4>Market Inefficiency Identified</h4>
+                <p>Despite SBA pre-qualification offering clear benefits in terms of buyer interest and success rates, only 43% of eligible deals utilize this financing option. This represents a significant opportunity for improvement in deal structuring and seller education.</p>
+            </div>
+            
+            <div class="insight-item">
+                <h4>The Advertising Effect</h4>
+                <p>Listings that advertise SBA pre-qualification in their titles receive 24-30% more buyer inquiries. This increased visibility translates directly into more potential buyers and competitive offers.</p>
+            </div>
+            
+            <div class="insight-item">
+                <h4>Time Trade-offs</h4>
+                <p>While SBA deals experience 38 additional days under LOI due to diligence requirements, they close 54 days faster overall. This net time savings, combined with higher success rates, makes SBA financing advantageous for most eligible deals.</p>
+            </div>
+            
+            <div class="insight-item">
+                <h4>Deal Size Confounding</h4>
+                <p>Initial analysis suggested higher commissions for SBA deals, but controlled analysis revealed this was due to deal size confounding - larger deals tend to use SBA financing while smaller deals use cash. When controlling for size, commission differences disappear.</p>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <h2 style="color: #0a1a3d; margin-bottom: 1rem;">Documentation & Reports</h2>
+            
+            <div class="nav-grid">
+                <a href="https://github.com/daoustmark/sba-study/blob/main/SBA_Impact_Analysis_Paper.md" target="_blank" class="nav-card">
+                    <h3>📄 Research Paper</h3>
+                    <p>Complete analysis paper with methodology, findings, and strategic recommendations for Quiet Light Brokerage leadership.</p>
+                </a>
+                
+                <a href="https://github.com/daoustmark/sba-study/blob/main/SBA_Fact_Check_Plain_Report.md" target="_blank" class="nav-card">
+                    <h3>✅ Fact-Check Report</h3>
+                    <p>Plain-language verification of all statistical claims, identifying both verified findings and minor discrepancies.</p>
+                </a>
+                
+                <a href="https://github.com/daoustmark/sba-study/blob/main/fact_check_report_detailed.md" target="_blank" class="nav-card">
+                    <h3>🔍 Detailed Verification</h3>
+                    <p>Comprehensive technical fact-checking with section-by-section verification of all claims against source data.</p>
+                </a>
+                
+                <a href="https://github.com/daoustmark/sba-study" target="_blank" class="nav-card">
+                    <h3>💻 GitHub Repository</h3>
+                    <p>Access the complete codebase, analysis scripts, data files, and documentation for this study.</p>
+                </a>
+                
+                <a href="https://github.com/daoustmark/sba-study/blob/main/README.md" target="_blank" class="nav-card">
+                    <h3>📚 Technical Documentation</h3>
+                    <p>Repository structure, methodology details, data integrity assessment, and usage instructions.</p>
+                </a>
+                
+                <a href="https://github.com/daoustmark/sba-study/tree/main/reports" target="_blank" class="nav-card">
+                    <h3>📊 Additional Reports</h3>
+                    <p>Archive of all generated reports, including timestamped versions and alternative analyses.</p>
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2024 Quiet Light Brokerage - Internal Research</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Data analysis based on 251 business listings from 2021-2024</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBA Cost/Benefit Analysis | Quiet Light Brokerage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .brand-bg-navy { background-color: #0a1a3d; }
+        .brand-bg-green { background-color: #36a157; }
+        .brand-text-navy { color: #0a1a3d; }
+        .stat-card { transition: all 0.3s ease; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .positive { color: #36a157; }
+        .negative { color: #dc2626; }
+        .highlight-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 4px solid #36a157;
+        }
+        .warning-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+        }
+        .cost-box {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-left: 4px solid #dc2626;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <div class="brand-bg-navy text-white p-6 shadow-lg">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-bold">SBA Financing Cost/Benefit Analysis</h1>
+            <p class="text-gray-300 mt-2">Financial Impact & Opportunity Cost Assessment</p>
+            <p class="text-sm text-gray-400 mt-1">Based on 35 SBA-prequalified sold deals | Quiet Light Brokerage</p>
+        </div>
+    </div>
+
+    <!-- Executive Summary -->
+    <div class="container mx-auto mt-8 px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-bold brand-text-navy mb-4">Executive Summary</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="highlight-box p-4 rounded">
+                    <h3 class="font-semibold text-green-800">Commission Advantage</h3>
+                    <p class="text-3xl font-bold mt-2">+$106K</p>
+                    <p class="text-sm text-gray-600 mt-1">Median additional commission with SBA</p>
+                    <p class="text-xs text-gray-500 mt-2">$210K vs $104K median</p>
+                </div>
+                
+                <div class="warning-box p-4 rounded">
+                    <h3 class="font-semibold text-yellow-800">Time Cost</h3>
+                    <p class="text-3xl font-bold mt-2">+38 days</p>
+                    <p class="text-sm text-gray-600 mt-1">Extra days under LOI</p>
+                    <p class="text-xs text-gray-500 mt-2">102 vs 64 days median</p>
+                </div>
+                
+                <div class="cost-box p-4 rounded">
+                    <h3 class="font-semibold text-red-800">Opportunity Cost</h3>
+                    <p class="text-3xl font-bold mt-2">$19-37K</p>
+                    <p class="text-sm text-gray-600 mt-1">Lost value on $1.75M deal</p>
+                    <p class="text-xs text-gray-500 mt-2">At 10-20% annual returns</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="container mx-auto mt-8 px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Commission ROI Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6 stat-card">
+                <h3 class="text-gray-600 text-sm font-semibold">Commission ROI</h3>
+                <p class="text-2xl font-bold brand-text-navy mt-2">+102%</p>
+                <p class="text-xs text-gray-500 mt-1">SBA deals pay double</p>
+            </div>
+
+            <!-- Interest Cost Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6 stat-card">
+                <h3 class="text-gray-600 text-sm font-semibold">Extra Interest (10yr)</h3>
+                <p class="text-2xl font-bold negative mt-2">+$529K</p>
+                <p class="text-xs text-gray-500 mt-1">On $1.75M deal</p>
+            </div>
+
+            <!-- Daily Cost Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6 stat-card">
+                <h3 class="text-gray-600 text-sm font-semibold">Daily Delay Cost</h3>
+                <p class="text-2xl font-bold brand-text-navy mt-2">$482-969</p>
+                <p class="text-xs text-gray-500 mt-1">$1.75M @ 10-20% return</p>
+            </div>
+
+            <!-- Break-even Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6 stat-card">
+                <h3 class="text-gray-600 text-sm font-semibold">Break-even Days</h3>
+                <p class="text-2xl font-bold positive mt-2">121-241</p>
+                <p class="text-xs text-gray-500 mt-1">Commission vs opportunity</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scenario Analysis -->
+    <div class="container mx-auto mt-8 px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold brand-text-navy mb-4">Deal Size Scenario Analysis</h2>
+            
+            <!-- Small Deal -->
+            <div class="mb-6 p-4 border rounded-lg">
+                <h3 class="font-semibold mb-3">Small Deal: $500,000</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <p class="text-gray-600">Commission Gain:</p>
+                        <p class="font-bold positive">+$2,500</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Opportunity Cost (38 days @ 10%):</p>
+                        <p class="font-bold negative">-$5,301</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Extra Interest (10 years):</p>
+                        <p class="font-bold negative">-$151,048</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Net Financial Impact:</p>
+                        <p class="font-bold negative">-$153,849</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medium Deal -->
+            <div class="mb-6 p-4 border rounded-lg bg-green-50">
+                <h3 class="font-semibold mb-3">Medium Deal: $1,750,000 (Typical)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <p class="text-gray-600">Commission Gain:</p>
+                        <p class="font-bold positive">+$8,750</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Opportunity Cost (38 days @ 10%):</p>
+                        <p class="font-bold negative">-$18,554</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Extra Interest (10 years):</p>
+                        <p class="font-bold negative">-$528,669</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Net Financial Impact:</p>
+                        <p class="font-bold negative">-$538,473</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Large Deal -->
+            <div class="mb-6 p-4 border rounded-lg">
+                <h3 class="font-semibold mb-3">Large Deal: $3,000,000</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <p class="text-gray-600">Commission Gain:</p>
+                        <p class="font-bold positive">+$15,000</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Opportunity Cost (38 days @ 10%):</p>
+                        <p class="font-bold negative">-$31,807</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Extra Interest (10 years):</p>
+                        <p class="font-bold negative">-$906,289</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Net Financial Impact:</p>
+                        <p class="font-bold negative">-$923,096</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="container mx-auto mt-8 px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Opportunity Cost Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-bold brand-text-navy mb-4">Opportunity Cost by Return Rate</h3>
+                <div style="height: 300px;">
+                    <canvas id="opportunityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Financing Cost Comparison -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-bold brand-text-navy mb-4">Total Financing Cost Comparison</h3>
+                <div style="height: 300px;">
+                    <canvas id="financingChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Lost Cash Flow Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-bold brand-text-navy mb-4">Lost Cash Flow Impact (First 24 Months)</h3>
+                <div style="height: 300px;">
+                    <canvas id="cashFlowChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Break-even Analysis -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-bold brand-text-navy mb-4">Break-even Analysis (Days)</h3>
+                <div style="height: 300px;">
+                    <canvas id="breakEvenChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Time Value Analysis -->
+    <div class="container mx-auto mt-8 px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold brand-text-navy mb-4">Time Value of Money Impact</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold mb-3">12-Month Impact ($1.75M Deal)</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex justify-between">
+                            <span>Lost cash flow from 38-day delay:</span>
+                            <span class="font-bold negative">-$56,146</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Compound effect (15% reinvestment):</span>
+                            <span class="font-bold negative">-$9,084</span>
+                        </li>
+                        <li class="flex justify-between border-t pt-2">
+                            <span>Total value lost by Month 12:</span>
+                            <span class="font-bold negative">-$65,230</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-3">24-Month Impact ($1.75M Deal)</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex justify-between">
+                            <span>Lost cash flow from 38-day delay:</span>
+                            <span class="font-bold negative">-$56,146</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Compound effect (15% reinvestment):</span>
+                            <span class="font-bold negative">-$19,638</span>
+                        </li>
+                        <li class="flex justify-between border-t pt-2">
+                            <span>Total value lost by Month 24:</span>
+                            <span class="font-bold negative">-$75,784</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Insights -->
+    <div class="container mx-auto mt-8 px-4 mb-12">
+        <div class="bg-gray-100 rounded-lg p-6">
+            <h2 class="text-xl font-bold brand-text-navy mb-4">Key Insights & Recommendations</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold mb-2">For Buyers:</h3>
+                    <ul class="text-sm space-y-1 text-gray-700">
+                        <li>• SBA financing adds 38 days (59% longer) to closing</li>
+                        <li>• Opportunity cost: $482-969/day on typical $1.75M deal</li>
+                        <li>• Extra interest over 10 years: ~$529K</li>
+                        <li>• Lost cash flow Year 1: ~$56K from delay</li>
+                        <li>• Consider if 10% down payment benefit outweighs costs</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-2">For Sellers/Brokers:</h3>
+                    <ul class="text-sm space-y-1 text-gray-700">
+                        <li>• SBA deals generate 102% higher commissions</li>
+                        <li>• Extra $106K median commission gain</li>
+                        <li>• Opportunity cost partially offsets gain</li>
+                        <li>• Net benefit positive for deals under 15% return</li>
+                        <li>• SBA buyers may be more committed (43% usage rate)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-6 p-4 bg-white rounded">
+                <h3 class="font-semibold mb-2">Bottom Line:</h3>
+                <p class="text-sm text-gray-700">
+                    <strong>For deals generating <15% annual returns:</strong> SBA financing commission gains exceed opportunity costs for brokers.
+                    <strong>For buyers:</strong> The 10% down payment benefit must be weighed against ~$600K+ in extra interest and opportunity costs over the loan term.
+                    The 38-day delay alone costs $19-37K in opportunity value on a typical $1.75M acquisition.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="brand-bg-navy text-white p-6">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">© 2024 Quiet Light Brokerage | Financial Analysis Dashboard</p>
+            <p class="text-xs text-gray-400 mt-2">Analysis based on 35 SBA-prequalified sold deals</p>
+        </div>
+    </footer>
+
+    <!-- Chart Scripts -->
+    <script>
+        // Configure Chart.js defaults
+        Chart.defaults.responsive = true;
+        Chart.defaults.maintainAspectRatio = false;
+        
+        // Opportunity Cost Chart
+        const oppCtx = document.getElementById('opportunityChart').getContext('2d');
+        new Chart(oppCtx, {
+            type: 'line',
+            data: {
+                labels: ['8%', '10%', '12%', '15%', '20%'],
+                datasets: [{
+                    label: '$500K Deal',
+                    data: [4237, 5301, 6366, 7972, 10657],
+                    borderColor: '#66e0f5',
+                    backgroundColor: '#66e0f520',
+                    tension: 0.3
+                }, {
+                    label: '$1.75M Deal',
+                    data: [14828, 18554, 22281, 27903, 37300],
+                    borderColor: '#36a157',
+                    backgroundColor: '#36a15720',
+                    tension: 0.3
+                }, {
+                    label: '$3M Deal',
+                    data: [25419, 31807, 38196, 47833, 63942],
+                    borderColor: '#297dde',
+                    backgroundColor: '#297dde20',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Opportunity Cost ($)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + (value/1000).toFixed(0) + 'K';
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Annual Return Rate'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Financing Cost Chart
+        const finCtx = document.getElementById('financingChart').getContext('2d');
+        new Chart(finCtx, {
+            type: 'bar',
+            data: {
+                labels: ['$500K Deal', '$1.75M Deal', '$3M Deal'],
+                datasets: [{
+                    label: 'SBA Total Interest',
+                    data: [309215, 1082254, 1855292],
+                    backgroundColor: '#dc2626'
+                }, {
+                    label: 'Conventional Interest',
+                    data: [158167, 553585, 949003],
+                    backgroundColor: '#36a157'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Interest Paid ($)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + (value/1000000).toFixed(1) + 'M';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+
+        // Cash Flow Impact Chart
+        const cfCtx = document.getElementById('cashFlowChart').getContext('2d');
+        new Chart(cfCtx, {
+            type: 'bar',
+            data: {
+                labels: ['$500K Deal', '$1.75M Deal', '$3M Deal'],
+                datasets: [{
+                    label: '12-Month Impact',
+                    data: [18637, 65230, 111823],
+                    backgroundColor: '#f59e0b'
+                }, {
+                    label: '24-Month Impact',
+                    data: [21653, 75784, 129916],
+                    backgroundColor: '#dc2626'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Lost Value ($)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + (value/1000).toFixed(0) + 'K';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+
+        // Break-even Chart
+        const beCtx = document.getElementById('breakEvenChart').getContext('2d');
+        new Chart(beCtx, {
+            type: 'line',
+            data: {
+                labels: ['10% Return', '15% Return', '20% Return'],
+                datasets: [{
+                    label: 'Days to Break-even',
+                    data: [241, 161, 121],
+                    borderColor: '#36a157',
+                    backgroundColor: '#36a15720',
+                    tension: 0.3,
+                    fill: true
+                }, {
+                    label: 'Actual SBA Delay',
+                    data: [38, 38, 38],
+                    borderColor: '#dc2626',
+                    borderStyle: 'dashed',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Days'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
