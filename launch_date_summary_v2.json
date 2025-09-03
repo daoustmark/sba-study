@@ -1,0 +1,43 @@
+{
+  "timestamp": "2025-08-29T15:45:50.143515",
+  "total_listings": 251,
+  "relaunch_count": 35,
+  "loi_stats": {
+    "with_loi": 143,
+    "multiple_lois": 101
+  },
+  "days_on_market": {
+    "yes_sold": {
+      "count": 35,
+      "median": 209.0,
+      "mean": 251.11428571428573
+    },
+    "no_sold": {
+      "count": 83,
+      "median": 172.0,
+      "mean": 198.3132530120482
+    },
+    "unknown_sold": {
+      "count": 19,
+      "median": 177.0,
+      "mean": 269.7894736842105
+    }
+  },
+  "days_under_loi": {
+    "yes_sold": {
+      "count": 25,
+      "median": 74.0,
+      "mean": 78.12
+    },
+    "no_sold": {
+      "count": 56,
+      "median": 38.0,
+      "mean": 93.19642857142857
+    },
+    "unknown_sold": {
+      "count": 12,
+      "median": 83.0,
+      "mean": 111.5
+    }
+  }
+}

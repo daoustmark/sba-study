@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-09-02T06:43:21.125088",
+  "total_listings": 251,
+  "sba_advertised": 57,
+  "sba_advertised_pct": 22.709163346613543,
+  "inquiry_impact": {
+    "advertised_median": 497.0,
+    "not_advertised_median": 383.0,
+    "difference": 114.0,
+    "pct_difference": 29.765013054830288
+  }
+}

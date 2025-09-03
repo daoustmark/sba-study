@@ -1,0 +1,158 @@
+{
+  "timestamp": "2025-08-29T17:49:41.540277",
+  "key_metrics": {
+    "extra_loi_days": 38,
+    "commission_increase_pct": 101.97981739548294,
+    "sba_median_commission": 210160.0,
+    "non_sba_median_commission": 104050.0
+  },
+  "scenarios": [
+    {
+      "scenario": "Small Deal",
+      "purchase_price": 500000,
+      "buyer_costs": [
+        {
+          "return_rate": "8%",
+          "opportunity_cost": 4236.563497847936,
+          "daily_cost": 110.04061033371262
+        },
+        {
+          "return_rate": "10%",
+          "opportunity_cost": 5301.155455501925,
+          "daily_cost": 137.6923494935565
+        },
+        {
+          "return_rate": "15%",
+          "opportunity_cost": 7972.222538852657,
+          "daily_cost": 207.0707152948742
+        },
+        {
+          "return_rate": "20%",
+          "opportunity_cost": 10657.040494204033,
+          "daily_cost": 276.8062466027022
+        }
+      ],
+      "seller_costs": [
+        {
+          "return_rate": "8%",
+          "opportunity_cost": 4236.563497847936,
+          "net_benefit": -1736.5634978479357
+        },
+        {
+          "return_rate": "10%",
+          "opportunity_cost": 5301.155455501925,
+          "net_benefit": -2801.1554555019247
+        },
+        {
+          "return_rate": "15%",
+          "opportunity_cost": 7972.222538852657,
+          "net_benefit": -5472.222538852657
+        },
+        {
+          "return_rate": "20%",
+          "opportunity_cost": 10657.040494204033,
+          "net_benefit": -8157.040494204033
+        }
+      ],
+      "commission_difference": 2500.0
+    },
+    {
+      "scenario": "Medium Deal",
+      "purchase_price": 1750000,
+      "buyer_costs": [
+        {
+          "return_rate": "8%",
+          "opportunity_cost": 14827.972242467804,
+          "daily_cost": 385.1421361679949
+        },
+        {
+          "return_rate": "10%",
+          "opportunity_cost": 18554.04409425659,
+          "daily_cost": 481.92322322744394
+        },
+        {
+          "return_rate": "15%",
+          "opportunity_cost": 27902.778885984328,
+          "daily_cost": 724.7475035320605
+        },
+        {
+          "return_rate": "20%",
+          "opportunity_cost": 37299.641729714116,
+          "daily_cost": 968.8218631094576
+        }
+      ],
+      "seller_costs": [
+        {
+          "return_rate": "8%",
+          "opportunity_cost": 14827.972242467804,
+          "net_benefit": -6077.972242467804
+        },
+        {
+          "return_rate": "10%",
+          "opportunity_cost": 18554.04409425659,
+          "net_benefit": -9804.044094256591
+        },
+        {
+          "return_rate": "15%",
+          "opportunity_cost": 27902.778885984328,
+          "net_benefit": -19152.778885984328
+        },
+        {
+          "return_rate": "20%",
+          "opportunity_cost": 37299.641729714116,
+          "net_benefit": -28549.641729714116
+        }
+      ],
+      "commission_difference": 8750.0
+    },
+    {
+      "scenario": "Large Deal",
+      "purchase_price": 3000000,
+      "buyer_costs": [
+        {
+          "return_rate": "8%",
+          "opportunity_cost": 25419.38098708773,
+          "daily_cost": 660.2436620022787
+        },
+        {
+          "return_rate": "10%",
+          "opportunity_cost": 31806.932733011432,
+          "daily_cost": 826.1540969613359
+        },
+        {
+          "return_rate": "15%",
+          "opportunity_cost": 47833.33523311606,
+          "daily_cost": 1242.4242917692482
+        },
+        {
+          "return_rate": "20%",
+          "opportunity_cost": 63942.2429652242,
+          "daily_cost": 1660.837479616213
+        }
+      ],
+      "seller_costs": [
+        {
+          "return_rate": "8%",
+          "opportunity_cost": 25419.38098708773,
+          "net_benefit": -10419.38098708773
+        },
+        {
+          "return_rate": "10%",
+          "opportunity_cost": 31806.932733011432,
+          "net_benefit": -16806.932733011432
+        },
+        {
+          "return_rate": "15%",
+          "opportunity_cost": 47833.33523311606,
+          "net_benefit": -32833.33523311606
+        },
+        {
+          "return_rate": "20%",
+          "opportunity_cost": 63942.2429652242,
+          "net_benefit": -48942.2429652242
+        }
+      ],
+      "commission_difference": 15000.0
+    }
+  ]
+}

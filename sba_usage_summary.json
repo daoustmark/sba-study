@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-08-29T15:58:58.623440",
+  "sba_prequalified_total": 58,
+  "had_sba_lois": 29,
+  "pct_with_sba_lois": 50.0,
+  "sold_deals": {
+    "total": 35,
+    "used_sba": 15,
+    "used_other": 20,
+    "pct_used_sba": 42.857142857142854
+  }
+}

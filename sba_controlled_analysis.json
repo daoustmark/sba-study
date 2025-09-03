@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-09-02T06:32:02.856011",
+  "controlled_metrics": {
+    "sba_success_rate": 0.833,
+    "non_sba_success_rate": 0.755,
+    "extra_days_sba": 38,
+    "sba_usage_rate": 0.43,
+    "deals_per_year_sba": 1.7464114832535884,
+    "deals_per_year_non_sba": 2.122093023255814
+  }
+}

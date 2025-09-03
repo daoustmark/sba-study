@@ -1,0 +1,47 @@
+[
+  {
+    "listing_id": 27592,
+    "sba_eligible": "no",
+    "sba_evidence": "SBA Eligible: No",
+    "seller_location": "unknown",
+    "asking_price": 900000,
+    "sde": 233777,
+    "filename": "27592_London x London Business Summary.pdf"
+  },
+  {
+    "listing_id": 34288,
+    "sba_eligible": "no",
+    "sba_evidence": "SBA Eligible: No; Due to the sellers being motivated for a quick sale, the asking price is below market value and we are seeking cash buyers. SBA buyers will not be entertained.",
+    "seller_location": "unknown",
+    "asking_price": 150000,
+    "sde": 87774,
+    "filename": "34288_1_ Beauty Goodies Business Summary.pdf"
+  },
+  {
+    "listing_id": 30199,
+    "sba_eligible": "yes",
+    "sba_evidence": "SBA Eligible YES",
+    "seller_location": "unknown",
+    "asking_price": 1400000,
+    "sde": 549962,
+    "filename": "30199_1 - Safety Gear Pro and Marvel Optics Business Summary.pdf"
+  },
+  {
+    "listing_id": 26480,
+    "sba_eligible": "no",
+    "sba_evidence": "SBA Eligible: No; This business is not SBA eligible (no US tax returns)",
+    "seller_location": "unknown",
+    "asking_price": 500000,
+    "sde": 250046,
+    "filename": "26480_1_ Invivify Business Summary.pdf"
+  },
+  {
+    "listing_id": 25776,
+    "sba_eligible": "unknown",
+    "sba_evidence": "not found",
+    "seller_location": "unknown",
+    "asking_price": 0,
+    "sde": 0,
+    "filename": "25776_1. Fastvan Business Summary vJune23.pdf"
+  }
+]

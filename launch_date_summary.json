@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-08-29T11:33:26.240104",
+  "total_listings": 251,
+  "with_launch_date": 251,
+  "days_on_market": {
+    "yes_sold": {
+      "count": 35,
+      "median": 272.0,
+      "mean": 303.48571428571427,
+      "min": 72.0,
+      "max": 1187.0
+    },
+    "no_sold": {
+      "count": 83,
+      "median": 180.0,
+      "mean": 216.21686746987953,
+      "min": 21.0,
+      "max": 648.0
+    },
+    "unknown_sold": {
+      "count": 19,
+      "median": 370.0,
+      "mean": 331.10526315789474,
+      "min": 85.0,
+      "max": 646.0
+    }
+  }
+}
