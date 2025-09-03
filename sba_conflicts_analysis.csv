@@ -1,0 +1,4 @@
+conflict_type,count,listings
+advertised_not_eligible,1,[np.int64(19678)]
+advertised_unknown,5,"[np.int64(21413), np.int64(23521), np.int64(25934), np.int64(29066), np.int64(30747)]"
+eligible_not_advertised,14,"[np.int64(19258), np.int64(21790), np.int64(21899), np.int64(22943), np.int64(23097), np.int64(24348), np.int64(25005), np.int64(26105), np.int64(27495), np.int64(29530)]"

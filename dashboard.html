@@ -135,11 +135,11 @@
                         </li>
                         <li class="flex justify-between">
                             <span>SBA-eligible that advertised:</span>
-                            <span class="font-bold">45/58 (78%)</span>
+                            <span class="font-bold">48/62 (77%)</span>
                         </li>
                         <li class="flex justify-between">
-                            <span>False advertising (not eligible):</span>
-                            <span class="font-bold text-red-600">12 listings</span>
+                            <span>Corrected misclassifications:</span>
+                            <span class="font-bold text-green-600">4 listings</span>
                         </li>
                     </ul>
                 </div>
@@ -504,11 +504,11 @@
         new Chart(inquiryCtx, {
             type: 'bar',
             data: {
-                labels: ['SBA Advertised', 'Not Advertised', 'False Advertising'],
+                labels: ['SBA Advertised', 'Not Advertised'],
                 datasets: [{
                     label: 'Median Inquiries',
-                    data: [505, 383, 465],
-                    backgroundColor: ['#36a157', '#297dde', '#dc2626'],
+                    data: [505, 383],
+                    backgroundColor: ['#36a157', '#297dde'],
                     borderWidth: 0
                 }]
             },
