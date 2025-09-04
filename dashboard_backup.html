@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuietLight SBA Impact Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f6fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0a1a3d 0%, #1a3a5d 100%);
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Key Metrics Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: -3rem auto 2rem;
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        
+        .metric-card.success {
+            border-top: 4px solid #36a157;
+        }
+        
+        .metric-card.warning {
+            border-top: 4px solid #ff9800;
+        }
+        
+        .metric-card.danger {
+            border-top: 4px solid #ff6b6b;
+        }
+        
+        .metric-card.info {
+            border-top: 4px solid #297dde;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+        
+        .metric-comparison {
+            font-size: 1.1rem;
+            color: #495057;
+            margin-top: 0.5rem;
+        }
+        
+        .metric-detail {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+        
+        /* Content Sections */
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            color: #0a1a3d;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 968px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin: 1.5rem 0;
+        }
+        
+        .chart-container.small {
+            height: 250px;
+        }
+        
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .data-table th {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            text-align: left;
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.95rem;
+        }
+        
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .highlight-row {
+            background: #fff3cd;
+        }
+        
+        /* Insight Boxes */
+        .insight-box {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 4px solid #36a157;
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .insight-box.warning {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left-color: #ff9800;
+        }
+        
+        .insight-box.info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left-color: #297dde;
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .insight-text {
+            color: #495057;
+            line-height: 1.6;
+        }
+        
+        /* Example Card */
+        .example-card {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .example-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 1rem;
+        }
+        
+        .example-content {
+            color: #6c757d;
+        }
+        
+        .example-metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .example-metric:last-child {
+            border-bottom: none;
+        }
+        
+        /* Usage Breakdown */
+        .usage-visual {
+            display: flex;
+            height: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .usage-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .usage-actual {
+            background: #ff6b6b;
+        }
+        
+        .usage-alternative {
+            background: #4ecdc4;
+        }
+        
+        /* Button styling */
+        .btn {
+            background: #297dde;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            background: #2368b8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(41, 125, 222, 0.3);
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+        }
+        
+        .modal.active {
+            display: block;
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            margin: 2% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: #0a1a3d;
+            margin: 0;
+        }
+        
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .data-search {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        
+        .data-search:focus {
+            outline: none;
+            border-color: #297dde;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #0a1a3d;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .footer-note {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+                margin-top: -2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SBA Impact Analysis</h1>
+        <p>Data-driven insights on SBA pre-qualification's effect on deal outcomes</p>
+    </div>
+    
+    <div class="container">
+        <!-- Key Metrics Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card success">
+                <div class="metric-label">Success Rate Impact</div>
+                <div class="metric-value" style="color: #36a157;" id="successIncrease">+13.2%</div>
+                <div class="metric-comparison">74.5% vs 61.3%</div>
+                <div class="metric-detail">21.5% relative improvement</div>
+            </div>
+            
+            <div class="metric-card danger">
+                <div class="metric-label">Timeline Impact</div>
+                <div class="metric-value" style="color: #ff6b6b;" id="timeIncrease">+60 days</div>
+                <div class="metric-comparison">238 vs 178 days</div>
+                <div class="metric-detail">33.7% longer to close</div>
+            </div>
+            
+            <div class="metric-card warning">
+                <div class="metric-label">Cost: Time Delay</div>
+                <div class="metric-value" style="color: #ff9800;" id="oppCost">-$62,311</div>
+                <div class="metric-comparison">Per 10 deals (2 SBA)</div>
+                <div class="metric-detail">Commission deferred</div>
+            </div>
+            
+            <div class="metric-card info">
+                <div class="metric-label">Benefit: Higher Success</div>
+                <div class="metric-value" style="color: #297dde;" id="successValue">+$50,177</div>
+                <div class="metric-comparison">Per 10 deals (2 SBA)</div>
+                <div class="metric-detail">From 13.2% better close rate</div>
+            </div>
+        </div>
+        
+        <!-- Opportunity Cost Analysis -->
+        <div class="section">
+            <h2 class="section-title">📊 Opportunity Cost Analysis</h2>
+            <div class="two-column">
+                <div>
+                    <h3 style="margin-bottom: 1rem; color: #495057;">Cost of SBA Delays</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Assumption</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Average Deal Size</td>
+                                <td><strong>$2,000,000</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Commission Rate</td>
+                                <td><strong>9.5%</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Commission per Deal</td>
+                                <td><strong>$190,000</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Annual Deal Volume</td>
+                                <td><strong>10 deals</strong></td>
+                            </tr>
+                            <tr>
+                                <td>SBA Mix (Portfolio)</td>
+                                <td><strong>20% (2 of 10)</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <table class="data-table" style="margin-top: 1.5rem;">
+                        <thead>
+                            <tr>
+                                <th>Impact Metric</th>
+                                <th>Per Deal</th>
+                                <th>Per 10 deals (2 SBA)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Days Delayed</td>
+                                <td>60 days</td>
+                                <td>120 days total</td>
+                            </tr>
+                            <tr>
+                                <td>Commission Deferred</td>
+                                <td><strong>$31,156</strong></td>
+                                <td><strong>$62,311</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Capacity Lost</td>
+                                <td>0.34 deals</td>
+                                <td>0.67 deals</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div>
+                    <h3 style="margin-bottom: 1rem; color: #495057;">Benefit of Higher Success</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Success Comparison</th>
+                                <th>SBA</th>
+                                <th>Non-SBA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Success Rate</td>
+                                <td><strong>74.5%</strong></td>
+                                <td>61.3%</td>
+                            </tr>
+                            <tr>
+                                <td>Attempts per 100 Closes</td>
+                                <td><strong>134</strong></td>
+                                <td>163</td>
+                            </tr>
+                            <tr>
+                                <td>Efficiency Gain</td>
+                                <td colspan="2" style="text-align: center;"><strong>29 fewer attempts needed</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="insight-box" style="margin-top: 1.5rem;">
+                        <div class="insight-title">💰 Net Impact Analysis</div>
+                        <div class="insight-text">
+                            For a portfolio of 10 deals (2 SBA, 8 non-SBA):<br>
+                            • <strong>Cost:</strong> $62,311 in deferred commission<br>
+                            • <strong>Benefit:</strong> 0.26 additional successful closes (~$50,177)<br>
+                            • <strong>Net:</strong> Time cost exceeds success benefit by ~$12,134<br>
+                            • <strong>However:</strong> The predictability and buyer pool expansion may justify this cost
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timeline Distribution -->
+        <div class="section">
+            <h2 class="section-title">📈 Timeline Distribution Analysis</h2>
+            <div class="two-column">
+                <div>
+                    <div class="chart-container small">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <div class="chart-container small">
+                        <canvas id="distributionPie"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="insight-box warning" style="margin-top: 1.5rem;">
+                <div class="insight-title">⚠️ Key Finding: Long Tail Risk</div>
+                <div class="insight-text">
+                    <strong>21% of SBA deals take over 365 days</strong> compared to 15% for non-SBA deals. 
+                    However, the middle 50% of SBA deals (121-365 days) are more predictable than non-SBA, 
+                    suggesting the process is consistent but slow.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Inquiry Analysis -->
+        <div class="section">
+            <h2 class="section-title">🎯 "SBA" in Title: Marketing Impact</h2>
+            <div class="two-column">
+                <div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>With "SBA" in Title</th>
+                                <th>Without "SBA"</th>
+                                <th>Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Number of Listings</td>
+                                <td>83</td>
+                                <td>448</td>
+                                <td>-</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>Average Inquiries</td>
+                                <td><strong>403</strong></td>
+                                <td>299</td>
+                                <td style="color: #36a157;"><strong>+35%</strong></td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>Success Rate</td>
+                                <td><strong>79.5%</strong></td>
+                                <td>60.9%</td>
+                                <td style="color: #36a157;"><strong>+18.6%</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <div class="insight-box info">
+                        <div class="insight-title">💡 Marketing Insight</div>
+                        <div class="insight-text">
+                            Including "SBA" in the listing title <strong>attracts 35% more inquiries</strong> 
+                            and achieves an <strong>18.6% higher success rate</strong>. This suggests SBA 
+                            pre-qualification acts as a quality signal that attracts serious, qualified buyers.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actual SBA Usage -->
+        <div class="section">
+            <h2 class="section-title">🔍 Actual SBA Financing Usage (2023-2025 Data)</h2>
+            <div class="two-column">
+                <div>
+                    <h3 style="margin-bottom: 1rem; color: #495057;">Of 42 SBA Pre-Qualified Sold Deals:</h3>
+                    <div class="usage-visual">
+                        <div class="usage-segment usage-actual" style="width: 50%;">
+                            50% Used SBA
+                        </div>
+                        <div class="usage-segment usage-alternative" style="width: 50%;">
+                            50% Alternative
+                        </div>
+                    </div>
+                    <table class="data-table" style="margin-top: 1rem;">
+                        <tbody>
+                            <tr>
+                                <td>Actually Used SBA Financing</td>
+                                <td><strong>21 deals</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Chose Alternative Financing</td>
+                                <td><strong>21 deals</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Data Coverage</td>
+                                <td>100% (42/42)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <div class="insight-box">
+                        <div class="insight-title">📊 Usage Pattern Analysis</div>
+                        <div class="insight-text">
+                            Only <strong>50% of SBA pre-qualified buyers actually use SBA financing</strong>. 
+                            The other 50% likely use the pre-qualification as leverage for conventional financing 
+                            or have found alternative funding. This suggests SBA pre-qualification serves as 
+                            much as a buyer credibility signal as an actual financing path.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Typical Example -->
+        <div class="section">
+            <h2 class="section-title">📋 Typical SBA Deal Example</h2>
+            <div class="example-card">
+                <div class="example-title">Representative SBA Pre-Qualified Listing (Median Timeline)</div>
+                <div class="example-content">
+                    <div class="example-metric">
+                        <span><strong>Listing ID:</strong></span>
+                        <span id="exampleId">32811</span>
+                    </div>
+                    <div class="example-metric">
+                        <span><strong>Business:</strong></span>
+                        <span id="exampleName">5-Year-Old SaaS Business | WordPress and Shopify</span>
+                    </div>
+                    <div class="example-metric">
+                        <span><strong>Days on Market:</strong></span>
+                        <span id="exampleDays">191 days (close to 184-day median)</span>
+                    </div>
+                    <div class="example-metric">
+                        <span><strong>Total Inquiries:</strong></span>
+                        <span id="exampleInquiries">360</span>
+                    </div>
+                    <div class="example-metric">
+                        <span><strong>Closed Date:</strong></span>
+                        <span id="exampleClosed">January 7, 2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data Verification Section -->
+        <div class="section">
+            <h2 class="section-title">🔍 Verify Source Data</h2>
+            <div class="two-column">
+                <div style="text-align: center; padding: 2rem;">
+                    <h3 style="color: #ff6b6b; margin-bottom: 1rem;">SBA Pre-Qualified Listings</h3>
+                    <p style="margin-bottom: 1rem;">76 sold listings</p>
+                    <button class="btn" onclick="showDataModal('sba')">View SBA Listings Data</button>
+                </div>
+                <div style="text-align: center; padding: 2rem;">
+                    <h3 style="color: #36a157; margin-bottom: 1rem;">Non-SBA Listings</h3>
+                    <p style="margin-bottom: 1rem;">263 sold listings</p>
+                    <button class="btn" onclick="showDataModal('nonSba')">View Non-SBA Listings Data</button>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <p style="color: #6c757d; font-size: 0.9rem;">
+                    Click to view detailed listing data used in this analysis. 
+                    Data includes listing ID, name, days on market, and closing status.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Summary -->
+        <div class="section" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+            <h2 class="section-title">📝 Executive Summary</h2>
+            <div class="two-column">
+                <div>
+                    <h3 style="color: #36a157; margin-bottom: 1rem;">✅ SBA Advantages</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 0.5rem 0;">• 21.5% higher relative success rate</li>
+                        <li style="padding: 0.5rem 0;">• 35% more inquiries with "SBA" in title</li>
+                        <li style="padding: 0.5rem 0;">• More predictable timeline (lower variability)</li>
+                        <li style="padding: 0.5rem 0;">• Serves as buyer quality signal</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="color: #ff6b6b; margin-bottom: 1rem;">❌ SBA Challenges</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 0.5rem 0;">• 60 days (34%) longer to close</li>
+                        <li style="padding: 0.5rem 0;">• $32,795 opportunity cost per deal</li>
+                        <li style="padding: 0.5rem 0;">• 21% chance of 365+ day timeline</li>
+                        <li style="padding: 0.5rem 0;">• Only 50% actually use SBA financing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p class="footer-note">
+            Based on 531 valid listings (102 SBA pre-qualified, 429 non-SBA). 
+            Actual SBA usage data from 42 deals (2023-2025) where LOI information available.
+        </p>
+    </div>
+    
+    <!-- Modal for Data Verification -->
+    <div id="dataModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Listing Data</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <input type="text" id="modalSearch" class="data-search" placeholder="Search by ID or name..." onkeyup="filterModalData()">
+            <div id="modalDataContent">
+                <!-- Table will be inserted here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let focusedData = null;
+        
+        // Load data on page load
+        async function loadData() {
+            try {
+                // Try to load updated analysis first
+                focusedData = await fetch('dashboard_updated_analysis.json').then(r => r.json());
+                updateMetrics();
+                createCharts();
+            } catch (error) {
+                // Fall back to original if updated doesn't exist
+                try {
+                    focusedData = await fetch('dashboard_focused_analysis.json').then(r => r.json());
+                    updateMetrics();
+                    createCharts();
+                } catch (e) {
+                    console.error('Error loading data:', e);
+                }
+            }
+        }
+        
+        function updateMetrics() {
+            if (!focusedData) return;
+            
+            // Update key metrics
+            document.getElementById('successIncrease').textContent = '+' + focusedData.key_metrics.success_rate.improvement_absolute + '%';
+            document.getElementById('timeIncrease').textContent = '+' + focusedData.key_metrics.timeline.penalty_days + ' days';
+            
+            // Use new 10-deal comparison if available - with negative/positive signs
+            if (focusedData.opportunity_cost.portfolio_10_deals) {
+                document.getElementById('oppCost').textContent = '-$' + focusedData.opportunity_cost.portfolio_10_deals.total_cost_of_delay.toLocaleString();
+            } else {
+                document.getElementById('oppCost').textContent = '-$' + focusedData.opportunity_cost.per_deal.cost_of_delay.toLocaleString();
+            }
+            
+            if (focusedData.opportunity_cost.success_benefit_10_deals) {
+                document.getElementById('successValue').textContent = '+$' + focusedData.opportunity_cost.success_benefit_10_deals.value_of_additional_closes.toLocaleString();
+            } else if (focusedData.opportunity_cost.success_benefit) {
+                document.getElementById('successValue').textContent = '+$' + focusedData.opportunity_cost.success_benefit.value_of_higher_success.toLocaleString();
+            }
+            
+            // Update example
+            if (focusedData.typical_example) {
+                document.getElementById('exampleId').textContent = focusedData.typical_example.id;
+                document.getElementById('exampleName').textContent = focusedData.typical_example.name;
+                document.getElementById('exampleDays').textContent = focusedData.typical_example.days_on_market + ' days (close to median)';
+                document.getElementById('exampleInquiries').textContent = focusedData.typical_example.inquiries;
+                
+                // Format date
+                const date = new Date(focusedData.typical_example.closed_date);
+                document.getElementById('exampleClosed').textContent = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+        }
+        
+        function createCharts() {
+            if (!focusedData) return;
+            
+            // Timeline Distribution Bar Chart - Use percentages if available
+            let sbaData, nonSbaData;
+            if (focusedData.timeline_distribution_percentage) {
+                // Use percentages
+                sbaData = Object.values(focusedData.timeline_distribution_percentage.sba);
+                nonSbaData = Object.values(focusedData.timeline_distribution_percentage.non_sba);
+            } else if (focusedData.timeline_distribution) {
+                // Fall back to counts
+                sbaData = Object.values(focusedData.timeline_distribution.sba);
+                nonSbaData = Object.values(focusedData.timeline_distribution.non_sba);
+            }
+            
+            const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+            new Chart(timelineCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['0-90 days', '91-180 days', '181-365 days', '365+ days'],
+                    datasets: [
+                        {
+                            label: 'SBA Pre-Qualified',
+                            data: sbaData,
+                            backgroundColor: 'rgba(255, 107, 107, 0.7)',
+                            borderColor: 'rgba(255, 107, 107, 1)',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Non-SBA',
+                            data: nonSbaData,
+                            backgroundColor: 'rgba(54, 161, 87, 0.7)',
+                            borderColor: 'rgba(54, 161, 87, 1)',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: focusedData.timeline_distribution_percentage ? 'Days on Market Distribution (% of Total)' : 'Days on Market Distribution',
+                            font: { size: 14 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y;
+                                    if (focusedData.timeline_distribution_percentage) {
+                                        return label + ': ' + value + '%';
+                                    }
+                                    return label + ': ' + value + ' deals';
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: focusedData.timeline_distribution_percentage ? 'Percentage of Deals' : 'Number of Deals'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    if (focusedData.timeline_distribution_percentage) {
+                                        return value + '%';
+                                    }
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Success/Failure Pie Chart
+            const pieCtx = document.getElementById('distributionPie').getContext('2d');
+            new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        'SBA Sold (' + focusedData.key_metrics.sample_sizes.sba_sold + ')',
+                        'SBA Lost (' + (focusedData.key_metrics.sample_sizes.sba_total - focusedData.key_metrics.sample_sizes.sba_sold) + ')',
+                        'Non-SBA Sold (' + focusedData.key_metrics.sample_sizes.non_sba_sold + ')',
+                        'Non-SBA Lost (' + (focusedData.key_metrics.sample_sizes.non_sba_total - focusedData.key_metrics.sample_sizes.non_sba_sold) + ')'
+                    ],
+                    datasets: [{
+                        data: [
+                            focusedData.key_metrics.sample_sizes.sba_sold,
+                            focusedData.key_metrics.sample_sizes.sba_total - focusedData.key_metrics.sample_sizes.sba_sold,
+                            focusedData.key_metrics.sample_sizes.non_sba_sold,
+                            focusedData.key_metrics.sample_sizes.non_sba_total - focusedData.key_metrics.sample_sizes.non_sba_sold
+                        ],
+                        backgroundColor: [
+                            'rgba(54, 161, 87, 0.8)',
+                            'rgba(255, 107, 107, 0.5)',
+                            'rgba(41, 125, 222, 0.8)',
+                            'rgba(255, 193, 7, 0.5)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Success Rate Comparison',
+                            font: { size: 14 }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize on load
+        loadData();
+        
+        // Load listings data for modals
+        let listingsData = null;
+        fetch('dashboard_listings_full.json')
+            .then(r => r.json())
+            .then(data => listingsData = data)
+            .catch(e => console.error('Could not load listings data:', e));
+        
+        // Modal functions
+        function showDataModal(type) {
+            const modal = document.getElementById('dataModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalDataContent');
+            
+            if (!listingsData) {
+                content.innerHTML = '<p>Loading data...</p>';
+                setTimeout(() => showDataModal(type), 500);
+                return;
+            }
+            
+            // Filter data based on type
+            const filteredData = listingsData.filter(l => {
+                if (type === 'sba') {
+                    return l.sba_status === 'yes' && l.status === 'sold';
+                } else {
+                    return l.sba_status !== 'yes' && l.status === 'sold';
+                }
+            });
+            
+            // Set title
+            title.textContent = type === 'sba' ? 
+                'SBA Pre-Qualified Listings (Sold)' : 
+                'Non-SBA Listings (Sold)';
+            
+            // Build table
+            let tableHtml = `
+                <div style="margin-bottom: 1rem;">
+                    <strong>Total: ${filteredData.length} listings</strong>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Days on Market</th>
+                            <th>Inquiries</th>
+                            <th>Closed Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalTableBody">
+            `;
+            
+            // Sort by days on market
+            filteredData.sort((a, b) => a.days_on_market - b.days_on_market);
+            
+            filteredData.forEach(listing => {
+                const closedDate = listing.closed_at ? 
+                    new Date(listing.closed_at).toLocaleDateString() : 
+                    'N/A';
+                
+                tableHtml += `
+                    <tr>
+                        <td>${listing.id}</td>
+                        <td>${listing.name.substring(0, 50)}${listing.name.length > 50 ? '...' : ''}</td>
+                        <td>${listing.days_on_market || 'N/A'}</td>
+                        <td>${listing.total_inquiries || 'N/A'}</td>
+                        <td>${closedDate}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            content.innerHTML = tableHtml;
+            modal.classList.add('active');
+            
+            // Store filtered data for search
+            modal.dataset.currentData = JSON.stringify(filteredData);
+        }
+        
+        function closeModal() {
+            document.getElementById('dataModal').classList.remove('active');
+            document.getElementById('modalSearch').value = '';
+        }
+        
+        function filterModalData() {
+            const searchTerm = document.getElementById('modalSearch').value.toLowerCase();
+            const modal = document.getElementById('dataModal');
+            const tbody = document.getElementById('modalTableBody');
+            
+            if (!modal.dataset.currentData) return;
+            
+            const data = JSON.parse(modal.dataset.currentData);
+            const filtered = data.filter(l => 
+                l.id.toString().includes(searchTerm) ||
+                l.name.toLowerCase().includes(searchTerm)
+            );
+            
+            let rowsHtml = '';
+            filtered.forEach(listing => {
+                const closedDate = listing.closed_at ? 
+                    new Date(listing.closed_at).toLocaleDateString() : 
+                    'N/A';
+                
+                rowsHtml += `
+                    <tr>
+                        <td>${listing.id}</td>
+                        <td>${listing.name.substring(0, 50)}${listing.name.length > 50 ? '...' : ''}</td>
+                        <td>${listing.days_on_market || 'N/A'}</td>
+                        <td>${listing.total_inquiries || 'N/A'}</td>
+                        <td>${closedDate}</td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = rowsHtml;
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('dataModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

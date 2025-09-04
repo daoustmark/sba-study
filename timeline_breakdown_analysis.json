@@ -1,0 +1,141 @@
+{
+  "generated_at": "2025-09-04 14:34:53",
+  "timeline_breakdown": {
+    "non_sba": {
+      "launch_to_loi": {
+        "avg": 106.3,
+        "median": 75.0,
+        "count": 252
+      },
+      "loi_to_close": {
+        "avg": 71.5,
+        "median": 50.0,
+        "count": 252
+      },
+      "total_days": {
+        "avg": 177.8,
+        "median": 125.0,
+        "count": 252
+      },
+      "count": 252
+    },
+    "sba_all": {
+      "launch_to_loi": {
+        "avg": 142.2,
+        "median": 110.0,
+        "count": 68
+      },
+      "loi_to_close": {
+        "avg": 95.5,
+        "median": 74.0,
+        "count": 68
+      },
+      "total_days": {
+        "avg": 237.7,
+        "median": 184.0,
+        "count": 68
+      },
+      "count": 68
+    }
+  },
+  "delay_breakdown": {
+    "launch_to_loi_delay": 35.9,
+    "loi_to_close_delay": 24.0,
+    "total_delay": 59.9
+  },
+  "sba_usage_analysis": {
+    "total_sba_sold": 68,
+    "actually_used_sba": 21,
+    "did_not_use_sba": 21,
+    "usage_rate": 30.9,
+    "sba_used_details": [
+      {
+        "id": 13990,
+        "name": "SBA Prequalified | 7 Year-Old Blue-Collar Workwear Brand w/38% Net Margins | Growth Opportunities",
+        "launch_to_loi": 130,
+        "loi_to_close": 88,
+        "total_days": 218,
+        "inquiries": 574
+      },
+      {
+        "id": 19410,
+        "name": "SBA Qualified Men\u2019s Fashion and Lifestyle Content Sites | 10 Years Old | Established Team",
+        "launch_to_loi": 75,
+        "loi_to_close": 51,
+        "total_days": 126,
+        "inquiries": 271
+      },
+      {
+        "id": 21049,
+        "name": "SBA Pre Qualified: 4,000+ Course Membership Business With 83% Recurring Revenue 155% YoY SDE Growth",
+        "launch_to_loi": 103,
+        "loi_to_close": 70,
+        "total_days": 173,
+        "inquiries": 455
+      },
+      {
+        "id": 23620,
+        "name": "SBA Pre-Qualified Custom Artwork Shopify Business | 75% Digital Sales | Turnkey Operations",
+        "launch_to_loi": 165,
+        "loi_to_close": 111,
+        "total_days": 276,
+        "inquiries": 522
+      },
+      {
+        "id": 23675,
+        "name": "SBA Pre-qual 22 year old Snow Sports Biz | $2.18m Rev | 1.2% Ad Spend | Huge Growth Opportunities",
+        "launch_to_loi": 72,
+        "loi_to_close": 49,
+        "total_days": 121,
+        "inquiries": 345
+      }
+    ],
+    "sba_not_used_details": [
+      {
+        "id": 14883,
+        "name": "SBA Pre-Qualified E-commerce Business Selling Limited Edition Playing Card Decks",
+        "launch_to_loi": 81,
+        "loi_to_close": 55,
+        "total_days": 136,
+        "inquiries": 243
+      },
+      {
+        "id": 16578,
+        "name": "Amazon FBA Biz Selling Premium Map, Puzzle, & Poker Mats | Strong Reviews | Easy Transfer",
+        "launch_to_loi": 15,
+        "loi_to_close": 11,
+        "total_days": 26,
+        "inquiries": 94
+      },
+      {
+        "id": 18623,
+        "name": "SBA Pre-Qualified: High Quality Food Blog / Rev & SDE Up 20+% YoY / Organic Behemoth / Clear Upside",
+        "launch_to_loi": 55,
+        "loi_to_close": 37,
+        "total_days": 92,
+        "inquiries": 193
+      },
+      {
+        "id": 19224,
+        "name": "SBA Pre-Qualified 19-Year-Old Automotive Parts Brand | Diversified Revenue | 5% YoY SDE Growth",
+        "launch_to_loi": 102,
+        "loi_to_close": 69,
+        "total_days": 171,
+        "inquiries": 543
+      },
+      {
+        "id": 20684,
+        "name": "SBA Pre-Qualified | Education Vertical Subscription | SaaS and Subscription Business",
+        "launch_to_loi": 118,
+        "loi_to_close": 79,
+        "total_days": 197,
+        "inquiries": 911
+      }
+    ]
+  },
+  "key_insights": {
+    "sba_usage_rate": "Only 30.9% of SBA pre-qualified deals actually use SBA financing",
+    "timeline_impact": "SBA deals take 59.9 days longer on average",
+    "phase_delays": "Most delay occurs in Launch to LOI (35.9 days) vs LOI to Close (24.0 days)"
+  }
+}
