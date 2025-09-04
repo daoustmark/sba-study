@@ -470,6 +470,10 @@
             background: #f8f9fa;
         }
         
+        .modal-table a:hover {
+            text-decoration: underline !important;
+        }
+        
         .table-container {
             max-height: 400px;
             overflow-y: auto;
@@ -904,15 +908,21 @@
                 `Non-SBA Deals (${filteredData.length} sold)`;
             
             // Populate table
-            tbody.innerHTML = filteredData.map(l => `
+            tbody.innerHTML = filteredData.map(l => {
+                // Format the closed date if it exists
+                let closedDate = 'N/A';
+                if (l.closed_at) {
+                    closedDate = l.closed_at.split(' ')[0]; // Get just the date part
+                }
+                return `
                 <tr>
                     <td>${l.id}</td>
-                    <td>${l.name}</td>
+                    <td><a href="https://ac.qlbadmin.com/listings/${l.id}" target="_blank" style="color: #297dde; text-decoration: none;">${l.name}</a></td>
                     <td>${l.days_on_market || 'N/A'}</td>
                     <td>${l.total_inquiries || 0}</td>
-                    <td>${l.closed_date || 'N/A'}</td>
+                    <td>${closedDate}</td>
                 </tr>
-            `).join('');
+            `}).join('');
             
             modal.style.display = 'block';
         }
@@ -959,14 +969,19 @@
                         financeType = 'Unknown';
                     }
                 }
+                // Format the closed date if it exists
+                let closedDate = 'N/A';
+                if (l.closed_at) {
+                    closedDate = l.closed_at.split(' ')[0]; // Get just the date part
+                }
                 return `
                 <tr>
                     <td>${l.id}</td>
-                    <td>${l.name}</td>
+                    <td><a href="https://ac.qlbadmin.com/listings/${l.id}" target="_blank" style="color: #297dde; text-decoration: none;">${l.name}</a></td>
                     <td>${financeType}</td>
                     <td>${l.days_on_market || 'N/A'}</td>
                     <td>${l.total_inquiries || 0}</td>
-                    <td>${l.closed_date || 'N/A'}</td>
+                    <td>${closedDate}</td>
                 </tr>
             `}).join('');
             
