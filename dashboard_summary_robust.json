@@ -1,0 +1,40 @@
+{
+  "last_updated": "2025-09-04 07:10:40",
+  "dataset": {
+    "total_cims": 582,
+    "valid_listings": 531,
+    "sold": 339,
+    "lost": 192,
+    "excluded": 51
+  },
+  "sba_prequalification": {
+    "total_prequalified": 102,
+    "sold_prequalified": 76,
+    "with_loi_data": 42,
+    "actually_used_sba": 21,
+    "preq_no_sba_use": 21,
+    "usage_rate": 50.0
+  },
+  "success_rates": {
+    "overall": 63.8,
+    "sba_prequalified": 74.5,
+    "not_sba": 59.1
+  },
+  "days_on_market": {
+    "actually_used_sba": {
+      "count": 21,
+      "mean": 187.2,
+      "median": 151.0
+    },
+    "preq_no_sba": {
+      "count": 21,
+      "mean": 183.8,
+      "median": 136.0
+    },
+    "not_prequalified": {
+      "count": 206,
+      "mean": 166.0,
+      "median": 115.5
+    }
+  }
+}
