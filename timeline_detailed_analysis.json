@@ -1,0 +1,118 @@
+{
+  "generated_at": "2025-09-04T15:21:29.859850",
+  "non_sba": {
+    "count": 252,
+    "launch_to_loi": {
+      "avg": 106,
+      "median": 75,
+      "min": 6,
+      "max": 331,
+      "p25": 36,
+      "p75": 166
+    },
+    "loi_to_close": {
+      "avg": 72,
+      "median": 50,
+      "min": 5,
+      "max": 221,
+      "p25": 25,
+      "p75": 111
+    },
+    "total": {
+      "avg": 178,
+      "median": 125,
+      "min": 11,
+      "max": 552,
+      "p25": 61,
+      "p75": 277
+    }
+  },
+  "sba_all": {
+    "count": 68,
+    "launch_to_loi": {
+      "avg": 142,
+      "median": 110,
+      "min": 15,
+      "max": 351,
+      "p25": 72,
+      "p75": 206
+    },
+    "loi_to_close": {
+      "avg": 96,
+      "median": 74,
+      "min": 11,
+      "max": 234,
+      "p25": 49,
+      "p75": 138
+    },
+    "total": {
+      "avg": 238,
+      "median": 184,
+      "min": 26,
+      "max": 585,
+      "p25": 121,
+      "p75": 344
+    }
+  },
+  "sba_actually_used": {
+    "count": 21,
+    "launch_to_loi": {
+      "avg": 112,
+      "median": 90,
+      "min": 35,
+      "max": 307,
+      "p25": 69,
+      "p75": 130
+    },
+    "loi_to_close": {
+      "avg": 75,
+      "median": 61,
+      "min": 24,
+      "max": 206,
+      "p25": 47,
+      "p75": 88
+    },
+    "total": {
+      "avg": 187,
+      "median": 151,
+      "min": 59,
+      "max": 513,
+      "p25": 116,
+      "p75": 218
+    }
+  },
+  "sba_not_used": {
+    "count": 21,
+    "launch_to_loi": {
+      "avg": 110,
+      "median": 81,
+      "min": 15,
+      "max": 291,
+      "p25": 51,
+      "p75": 130
+    },
+    "loi_to_close": {
+      "avg": 74,
+      "median": 55,
+      "min": 11,
+      "max": 194,
+      "p25": 35,
+      "p75": 87
+    },
+    "total": {
+      "avg": 184,
+      "median": 136,
+      "min": 26,
+      "max": 485,
+      "p25": 86,
+      "p75": 217
+    }
+  },
+  "delays": {
+    "launch_to_loi": 36,
+    "loi_to_close": 24,
+    "total": 60,
+    "launch_to_loi_pct": 34.0,
+    "loi_to_close_pct": 33.3
+  }
+}

@@ -171,7 +171,7 @@
         /* Timeline Breakdown */
         .timeline-breakdown {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
         }
@@ -184,8 +184,98 @@
         }
         
         .timeline-card h3 {
-            margin-bottom: 1rem;
-            color: #495057;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .timeline-stats {
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-row {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .stat-row.total {
+            border-bottom: none;
+            border-top: 2px solid #dee2e6;
+            margin-top: 0.5rem;
+            padding-top: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .stat-label {
+            flex: 0 0 120px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .stat-value {
+            flex: 0 0 80px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #0a1a3d;
+        }
+        
+        .stat-detail {
+            color: #868e96;
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+        
+        .delay-badge {
+            margin-left: auto;
+            background: #ffebee;
+            color: #ff6b6b;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .timeline-visual {
+            margin-top: 1rem;
+        }
+        
+        .timeline-bar {
+            display: flex;
+            height: 40px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .timeline-segment.launch-to-loi {
+            background: linear-gradient(135deg, #297dde, #4a90e2);
+        }
+        
+        .timeline-segment.loi-to-close {
+            background: linear-gradient(135deg, #36a157, #4fc774);
+        }
+        
+        .timeline-segment.launch-to-loi.delayed {
+            background: linear-gradient(135deg, #ff9800, #ffb74d);
+        }
+        
+        .timeline-segment.loi-to-close.delayed {
+            background: linear-gradient(135deg, #ff6b6b, #ff8787);
+        }
+        
+        .timeline-insights {
+            margin-top: 2rem;
         }
         
         .timeline-phases {
@@ -517,6 +607,104 @@
                 <div class="metric-value" style="color: #297dde;">+$50,177</div>
                 <div class="metric-comparison">Per 10 deals (2 SBA)</div>
                 <div class="metric-detail">From 13.2% better close rate</div>
+            </div>
+        </div>
+        
+        <!-- Timeline Breakdown Analysis -->
+        <div class="section">
+            <h2 class="section-title">⏱️ Detailed Timeline Analysis: Where Do Delays Occur?</h2>
+            
+            <div class="timeline-breakdown">
+                <div class="timeline-card">
+                    <h3 style="color: #297dde;">Non-SBA Deals (Standard)</h3>
+                    <div class="timeline-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">Launch to LOI:</span>
+                            <span class="stat-value">106 days</span>
+                            <span class="stat-detail">(median: 75)</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">LOI to Close:</span>
+                            <span class="stat-value">72 days</span>
+                            <span class="stat-detail">(median: 50)</span>
+                        </div>
+                        <div class="stat-row total">
+                            <span class="stat-label">Total Time:</span>
+                            <span class="stat-value">178 days</span>
+                            <span class="stat-detail">(median: 125)</span>
+                        </div>
+                    </div>
+                    <div class="timeline-visual">
+                        <div class="timeline-bar">
+                            <div class="timeline-segment launch-to-loi" style="width: 59.5%;">
+                                <span>106d</span>
+                            </div>
+                            <div class="timeline-segment loi-to-close" style="width: 40.5%;">
+                                <span>72d</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-card" style="border-left-color: #ff6b6b;">
+                    <h3 style="color: #ff6b6b;">SBA Pre-qualified Deals</h3>
+                    <div class="timeline-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">Launch to LOI:</span>
+                            <span class="stat-value">142 days</span>
+                            <span class="stat-detail">(median: 110)</span>
+                            <span class="delay-badge">+36 days</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">LOI to Close:</span>
+                            <span class="stat-value">96 days</span>
+                            <span class="stat-detail">(median: 74)</span>
+                            <span class="delay-badge">+24 days</span>
+                        </div>
+                        <div class="stat-row total">
+                            <span class="stat-label">Total Time:</span>
+                            <span class="stat-value">238 days</span>
+                            <span class="stat-detail">(median: 184)</span>
+                            <span class="delay-badge">+60 days</span>
+                        </div>
+                    </div>
+                    <div class="timeline-visual">
+                        <div class="timeline-bar">
+                            <div class="timeline-segment launch-to-loi delayed" style="width: 59.7%;">
+                                <span>142d</span>
+                            </div>
+                            <div class="timeline-segment loi-to-close delayed" style="width: 40.3%;">
+                                <span>96d</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-insights">
+                <div class="insight-box danger">
+                    <div class="insight-title">📊 Key Findings</div>
+                    <div class="insight-text">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            <div>
+                                <strong>Launch to LOI Phase (+36 days / +34%)</strong><br>
+                                • SBA deals take longer to attract initial interest<br>
+                                • Buyers need more time to understand SBA requirements<br>
+                                • More complex buyer qualification process
+                            </div>
+                            <div>
+                                <strong>LOI to Close Phase (+24 days / +33%)</strong><br>
+                                • SBA loan approval and documentation<br>
+                                • Additional due diligence requirements<br>
+                                • Third-party lender coordination
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ffcccc;">
+                            <strong>Bottom Line:</strong> Both phases contribute equally to delays - it's not just the SBA financing process (LOI to Close), 
+                            but also the initial buyer attraction phase (Launch to LOI) that adds significant time.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
