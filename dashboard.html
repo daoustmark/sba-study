@@ -270,6 +270,95 @@
             background: #4ecdc4;
         }
         
+        /* Button styling */
+        .btn {
+            background: #297dde;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            background: #2368b8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(41, 125, 222, 0.3);
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+        }
+        
+        .modal.active {
+            display: block;
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            margin: 2% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: #0a1a3d;
+            margin: 0;
+        }
+        
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .data-search {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        
+        .data-search:focus {
+            outline: none;
+            border-color: #297dde;
+        }
+        
         /* Footer */
         .footer {
             background: #0a1a3d;
@@ -317,17 +406,17 @@
             </div>
             
             <div class="metric-card warning">
-                <div class="metric-label">Time Cost</div>
-                <div class="metric-value" style="color: #ff9800;" id="oppCost">$62,311</div>
+                <div class="metric-label">Cost: Time Delay</div>
+                <div class="metric-value" style="color: #ff9800;" id="oppCost">-$62,311</div>
                 <div class="metric-comparison">Per 10 deals (2 SBA)</div>
                 <div class="metric-detail">Commission deferred</div>
             </div>
             
             <div class="metric-card info">
-                <div class="metric-label">Success Benefit</div>
-                <div class="metric-value" style="color: #297dde;" id="successValue">$50,177</div>
+                <div class="metric-label">Benefit: Higher Success</div>
+                <div class="metric-value" style="color: #297dde;" id="successValue">+$50,177</div>
                 <div class="metric-comparison">Per 10 deals (2 SBA)</div>
-                <div class="metric-detail">From higher close rate</div>
+                <div class="metric-detail">From 13.2% better close rate</div>
             </div>
         </div>
         
@@ -587,6 +676,29 @@
             </div>
         </div>
         
+        <!-- Data Verification Section -->
+        <div class="section">
+            <h2 class="section-title">🔍 Verify Source Data</h2>
+            <div class="two-column">
+                <div style="text-align: center; padding: 2rem;">
+                    <h3 style="color: #ff6b6b; margin-bottom: 1rem;">SBA Pre-Qualified Listings</h3>
+                    <p style="margin-bottom: 1rem;">76 sold listings</p>
+                    <button class="btn" onclick="showDataModal('sba')">View SBA Listings Data</button>
+                </div>
+                <div style="text-align: center; padding: 2rem;">
+                    <h3 style="color: #36a157; margin-bottom: 1rem;">Non-SBA Listings</h3>
+                    <p style="margin-bottom: 1rem;">263 sold listings</p>
+                    <button class="btn" onclick="showDataModal('nonSba')">View Non-SBA Listings Data</button>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <p style="color: #6c757d; font-size: 0.9rem;">
+                    Click to view detailed listing data used in this analysis. 
+                    Data includes listing ID, name, days on market, and closing status.
+                </p>
+            </div>
+        </div>
+        
         <!-- Summary -->
         <div class="section" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
             <h2 class="section-title">📝 Executive Summary</h2>
@@ -620,6 +732,20 @@
         </p>
     </div>
     
+    <!-- Modal for Data Verification -->
+    <div id="dataModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Listing Data</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <input type="text" id="modalSearch" class="data-search" placeholder="Search by ID or name..." onkeyup="filterModalData()">
+            <div id="modalDataContent">
+                <!-- Table will be inserted here -->
+            </div>
+        </div>
+    </div>
+    
     <script>
         let focusedData = null;
         
@@ -649,17 +775,17 @@
             document.getElementById('successIncrease').textContent = '+' + focusedData.key_metrics.success_rate.improvement_absolute + '%';
             document.getElementById('timeIncrease').textContent = '+' + focusedData.key_metrics.timeline.penalty_days + ' days';
             
-            // Use new 10-deal comparison if available
+            // Use new 10-deal comparison if available - with negative/positive signs
             if (focusedData.opportunity_cost.portfolio_10_deals) {
-                document.getElementById('oppCost').textContent = '$' + focusedData.opportunity_cost.portfolio_10_deals.total_cost_of_delay.toLocaleString();
+                document.getElementById('oppCost').textContent = '-$' + focusedData.opportunity_cost.portfolio_10_deals.total_cost_of_delay.toLocaleString();
             } else {
-                document.getElementById('oppCost').textContent = '$' + focusedData.opportunity_cost.per_deal.cost_of_delay.toLocaleString();
+                document.getElementById('oppCost').textContent = '-$' + focusedData.opportunity_cost.per_deal.cost_of_delay.toLocaleString();
             }
             
             if (focusedData.opportunity_cost.success_benefit_10_deals) {
-                document.getElementById('successValue').textContent = '$' + focusedData.opportunity_cost.success_benefit_10_deals.value_of_additional_closes.toLocaleString();
+                document.getElementById('successValue').textContent = '+$' + focusedData.opportunity_cost.success_benefit_10_deals.value_of_additional_closes.toLocaleString();
             } else if (focusedData.opportunity_cost.success_benefit) {
-                document.getElementById('successValue').textContent = '$' + focusedData.opportunity_cost.success_benefit.value_of_higher_success.toLocaleString();
+                document.getElementById('successValue').textContent = '+$' + focusedData.opportunity_cost.success_benefit.value_of_higher_success.toLocaleString();
             }
             
             // Update example
@@ -812,6 +938,134 @@
         
         // Initialize on load
         loadData();
+        
+        // Load listings data for modals
+        let listingsData = null;
+        fetch('dashboard_listings_full.json')
+            .then(r => r.json())
+            .then(data => listingsData = data)
+            .catch(e => console.error('Could not load listings data:', e));
+        
+        // Modal functions
+        function showDataModal(type) {
+            const modal = document.getElementById('dataModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalDataContent');
+            
+            if (!listingsData) {
+                content.innerHTML = '<p>Loading data...</p>';
+                setTimeout(() => showDataModal(type), 500);
+                return;
+            }
+            
+            // Filter data based on type
+            const filteredData = listingsData.filter(l => {
+                if (type === 'sba') {
+                    return l.sba_status === 'yes' && l.status === 'sold';
+                } else {
+                    return l.sba_status !== 'yes' && l.status === 'sold';
+                }
+            });
+            
+            // Set title
+            title.textContent = type === 'sba' ? 
+                'SBA Pre-Qualified Listings (Sold)' : 
+                'Non-SBA Listings (Sold)';
+            
+            // Build table
+            let tableHtml = `
+                <div style="margin-bottom: 1rem;">
+                    <strong>Total: ${filteredData.length} listings</strong>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Days on Market</th>
+                            <th>Inquiries</th>
+                            <th>Closed Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalTableBody">
+            `;
+            
+            // Sort by days on market
+            filteredData.sort((a, b) => a.days_on_market - b.days_on_market);
+            
+            filteredData.forEach(listing => {
+                const closedDate = listing.closed_at ? 
+                    new Date(listing.closed_at).toLocaleDateString() : 
+                    'N/A';
+                
+                tableHtml += `
+                    <tr>
+                        <td>${listing.id}</td>
+                        <td>${listing.name.substring(0, 50)}${listing.name.length > 50 ? '...' : ''}</td>
+                        <td>${listing.days_on_market || 'N/A'}</td>
+                        <td>${listing.total_inquiries || 'N/A'}</td>
+                        <td>${closedDate}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            content.innerHTML = tableHtml;
+            modal.classList.add('active');
+            
+            // Store filtered data for search
+            modal.dataset.currentData = JSON.stringify(filteredData);
+        }
+        
+        function closeModal() {
+            document.getElementById('dataModal').classList.remove('active');
+            document.getElementById('modalSearch').value = '';
+        }
+        
+        function filterModalData() {
+            const searchTerm = document.getElementById('modalSearch').value.toLowerCase();
+            const modal = document.getElementById('dataModal');
+            const tbody = document.getElementById('modalTableBody');
+            
+            if (!modal.dataset.currentData) return;
+            
+            const data = JSON.parse(modal.dataset.currentData);
+            const filtered = data.filter(l => 
+                l.id.toString().includes(searchTerm) ||
+                l.name.toLowerCase().includes(searchTerm)
+            );
+            
+            let rowsHtml = '';
+            filtered.forEach(listing => {
+                const closedDate = listing.closed_at ? 
+                    new Date(listing.closed_at).toLocaleDateString() : 
+                    'N/A';
+                
+                rowsHtml += `
+                    <tr>
+                        <td>${listing.id}</td>
+                        <td>${listing.name.substring(0, 50)}${listing.name.length > 50 ? '...' : ''}</td>
+                        <td>${listing.days_on_market || 'N/A'}</td>
+                        <td>${listing.total_inquiries || 'N/A'}</td>
+                        <td>${closedDate}</td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = rowsHtml;
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('dataModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
     </script>
 </body>
 </html>
