@@ -91,7 +91,9 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
-            margin: 2rem auto;
+            margin: -3rem auto 2rem;
+            position: relative;
+            z-index: 10;
             max-width: 1200px;
         }
         
@@ -483,28 +485,6 @@
     </div>
     
     <div class="container">
-        <!-- Critical Insight Banner -->
-        <div class="critical-insight">
-            <h2>⚠️ Critical Finding: Only 28% of SBA Pre-qualified Deals Actually Use SBA</h2>
-            <p style="font-size: 1.1rem; margin-top: 0.5rem;">
-                Analysis of 76 SBA pre-qualified deals reveals a surprising pattern
-            </p>
-            <div class="insight-stats">
-                <div class="stat-item">
-                    <div class="stat-value">21</div>
-                    <div class="stat-label">Used SBA Financing</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">55</div>
-                    <div class="stat-label">Used Alternative Financing</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">28%</div>
-                    <div class="stat-label">Actual SBA Usage Rate</div>
-                </div>
-            </div>
-        </div>
-        
         <!-- Key Metrics -->
         <div class="metrics-grid">
             <div class="metric-card success">
@@ -622,6 +602,68 @@
                     • <strong>Speed to close:</strong> Alternative financing closes 41 days faster on average<br>
                     • <strong>Competitive offers:</strong> In bidding situations, non-SBA offers may be more attractive to sellers<br>
                     • <strong>Deal structure:</strong> Some deal terms may not align with SBA requirements
+                </div>
+            </div>
+        </div>
+        
+        <!-- Inquiry Analysis -->
+        <div class="section">
+            <h2 class="section-title">🎯 "SBA" in Title: Marketing Impact</h2>
+            <div class="two-column">
+                <div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>With "SBA" in Title</th>
+                                <th>Without "SBA"</th>
+                                <th>Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Number of Listings</td>
+                                <td>66</td>
+                                <td>273</td>
+                                <td>-</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>Average Inquiries</td>
+                                <td><strong>429</strong></td>
+                                <td>301</td>
+                                <td style="color: #36a157;"><strong>+42.5%</strong></td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>Success Rate</td>
+                                <td><strong>79.5%</strong></td>
+                                <td>60.9%</td>
+                                <td style="color: #36a157;"><strong>+18.6%</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="insight-box info" style="margin-top: 1.5rem;">
+                        <div class="insight-title">📊 Key Finding</div>
+                        <div class="insight-text">
+                            <strong>82.9% of SBA pre-qualified deals include "SBA" in their listing title</strong><br>
+                            This marketing signal attracts 42.5% more inquiries and achieves 18.6% higher success rate.
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="insight-box success">
+                        <div class="insight-title">💡 Marketing Insight</div>
+                        <div class="insight-text">
+                            Including "SBA" in the listing title acts as a <strong>quality signal</strong> that:
+                            <br><br>
+                            • Attracts <strong>42.5% more inquiries</strong> (429 vs 301 average)<br>
+                            • Increases success rate by <strong>18.6 percentage points</strong><br>
+                            • Signals financing availability to qualified buyers<br>
+                            • Pre-screens serious buyers who understand SBA process<br>
+                            <br>
+                            <strong>Best Practice:</strong> 83% of advisors already include "SBA" in titles for pre-qualified deals
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -888,13 +930,15 @@
             
             let filteredData;
             if (type === 'used') {
-                // For "used", show deals with actually_used_sba === 1
-                filteredData = sbaDeals.filter(l => l.actually_used_sba === 1);
+                // For "used", show deals with actually_used_sba === true or 1
+                filteredData = sbaDeals.filter(l => l.actually_used_sba === true || l.actually_used_sba === 1);
             } else {
-                // For "not used", either actually_used_sba === 0 OR no LOI data (undefined)
+                // For "not used", either actually_used_sba === false/0 OR no LOI data (null/undefined)
                 filteredData = sbaDeals.filter(l => 
-                    l.actually_used_sba === 0 || 
-                    (l.actually_used_sba === undefined && l.closed_date)
+                    l.actually_used_sba === false || 
+                    l.actually_used_sba === 0 ||
+                    l.actually_used_sba === null ||
+                    l.actually_used_sba === undefined
                 );
             }
             
@@ -904,16 +948,27 @@
                 `SBA Deals That Used Alternative Financing (${filteredData.length})`;
             
             // Populate table
-            tbody.innerHTML = filteredData.map(l => `
+            tbody.innerHTML = filteredData.map(l => {
+                let financeType = l.finance_type || '';
+                if (!financeType) {
+                    if (l.actually_used_sba === true || l.actually_used_sba === 1) {
+                        financeType = 'SBA 7(a)';
+                    } else if (l.actually_used_sba === false || l.actually_used_sba === 0) {
+                        financeType = 'Alternative';
+                    } else {
+                        financeType = 'Unknown';
+                    }
+                }
+                return `
                 <tr>
                     <td>${l.id}</td>
                     <td>${l.name}</td>
-                    <td>${l.finance_type || (l.actually_used_sba === 1 ? 'SBA 7(a)' : (l.actually_used_sba === 0 ? 'Alternative' : 'Unknown'))}</td>
+                    <td>${financeType}</td>
                     <td>${l.days_on_market || 'N/A'}</td>
                     <td>${l.total_inquiries || 0}</td>
                     <td>${l.closed_date || 'N/A'}</td>
                 </tr>
-            `).join('');
+            `}).join('');
             
             modal.style.display = 'block';
         }
