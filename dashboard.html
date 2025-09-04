@@ -317,16 +317,16 @@
             </div>
             
             <div class="metric-card warning">
-                <div class="metric-label">Opportunity Cost</div>
-                <div class="metric-value" style="color: #ff9800;" id="oppCost">$32,795</div>
-                <div class="metric-comparison">Per $2M deal</div>
-                <div class="metric-detail">0.34 deals foregone</div>
+                <div class="metric-label">Time Cost</div>
+                <div class="metric-value" style="color: #ff9800;" id="oppCost">$62,311</div>
+                <div class="metric-comparison">Per 10 deals (2 SBA)</div>
+                <div class="metric-detail">Commission deferred</div>
             </div>
             
             <div class="metric-card info">
                 <div class="metric-label">Success Benefit</div>
-                <div class="metric-value" style="color: #297dde;" id="successValue">$264,000</div>
-                <div class="metric-comparison">Per 10 deals</div>
+                <div class="metric-value" style="color: #297dde;" id="successValue">$50,177</div>
+                <div class="metric-comparison">Per 10 deals (2 SBA)</div>
                 <div class="metric-detail">From higher close rate</div>
             </div>
         </div>
@@ -351,19 +351,19 @@
                             </tr>
                             <tr>
                                 <td>Commission Rate</td>
-                                <td><strong>10%</strong></td>
+                                <td><strong>9.5%</strong></td>
                             </tr>
                             <tr>
                                 <td>Commission per Deal</td>
-                                <td><strong>$200,000</strong></td>
+                                <td><strong>$190,000</strong></td>
                             </tr>
                             <tr>
                                 <td>Annual Deal Volume</td>
-                                <td><strong>50 deals</strong></td>
+                                <td><strong>10 deals</strong></td>
                             </tr>
                             <tr>
-                                <td>SBA Mix (Current)</td>
-                                <td><strong>19.2%</strong></td>
+                                <td>SBA Mix (Portfolio)</td>
+                                <td><strong>20% (2 of 10)</strong></td>
                             </tr>
                         </tbody>
                     </table>
@@ -373,24 +373,24 @@
                             <tr>
                                 <th>Impact Metric</th>
                                 <th>Per Deal</th>
-                                <th>Annual (10 deals)</th>
+                                <th>Per 10 deals (2 SBA)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>Days Delayed</td>
                                 <td>60 days</td>
-                                <td>600 days</td>
+                                <td>120 days total</td>
                             </tr>
                             <tr>
                                 <td>Commission Deferred</td>
-                                <td><strong>$32,795</strong></td>
-                                <td><strong>$327,950</strong></td>
+                                <td><strong>$31,156</strong></td>
+                                <td><strong>$62,311</strong></td>
                             </tr>
                             <tr>
                                 <td>Capacity Lost</td>
                                 <td>0.34 deals</td>
-                                <td>3.4 deals</td>
+                                <td>0.67 deals</td>
                             </tr>
                         </tbody>
                     </table>
@@ -427,10 +427,10 @@
                     <div class="insight-box" style="margin-top: 1.5rem;">
                         <div class="insight-title">💰 Net Impact Analysis</div>
                         <div class="insight-text">
-                            For every 10 SBA deals:<br>
-                            • <strong>Cost:</strong> $327,950 in deferred commission<br>
-                            • <strong>Benefit:</strong> 1.3 additional successful closes (~$260,000)<br>
-                            • <strong>Net:</strong> Time cost exceeds success benefit by ~$68,000<br>
+                            For a portfolio of 10 deals (2 SBA, 8 non-SBA):<br>
+                            • <strong>Cost:</strong> $62,311 in deferred commission<br>
+                            • <strong>Benefit:</strong> 0.26 additional successful closes (~$50,177)<br>
+                            • <strong>Net:</strong> Time cost exceeds success benefit by ~$12,134<br>
                             • <strong>However:</strong> The predictability and buyer pool expansion may justify this cost
                         </div>
                     </div>
@@ -626,11 +626,19 @@
         // Load data on page load
         async function loadData() {
             try {
-                focusedData = await fetch('dashboard_focused_analysis.json').then(r => r.json());
+                // Try to load updated analysis first
+                focusedData = await fetch('dashboard_updated_analysis.json').then(r => r.json());
                 updateMetrics();
                 createCharts();
             } catch (error) {
-                console.error('Error loading data:', error);
+                // Fall back to original if updated doesn't exist
+                try {
+                    focusedData = await fetch('dashboard_focused_analysis.json').then(r => r.json());
+                    updateMetrics();
+                    createCharts();
+                } catch (e) {
+                    console.error('Error loading data:', e);
+                }
             }
         }
         
@@ -640,8 +648,19 @@
             // Update key metrics
             document.getElementById('successIncrease').textContent = '+' + focusedData.key_metrics.success_rate.improvement_absolute + '%';
             document.getElementById('timeIncrease').textContent = '+' + focusedData.key_metrics.timeline.penalty_days + ' days';
-            document.getElementById('oppCost').textContent = '$' + focusedData.opportunity_cost.per_deal.cost_of_delay.toLocaleString();
-            document.getElementById('successValue').textContent = '$' + focusedData.opportunity_cost.success_benefit.value_of_higher_success.toLocaleString();
+            
+            // Use new 10-deal comparison if available
+            if (focusedData.opportunity_cost.portfolio_10_deals) {
+                document.getElementById('oppCost').textContent = '$' + focusedData.opportunity_cost.portfolio_10_deals.total_cost_of_delay.toLocaleString();
+            } else {
+                document.getElementById('oppCost').textContent = '$' + focusedData.opportunity_cost.per_deal.cost_of_delay.toLocaleString();
+            }
+            
+            if (focusedData.opportunity_cost.success_benefit_10_deals) {
+                document.getElementById('successValue').textContent = '$' + focusedData.opportunity_cost.success_benefit_10_deals.value_of_additional_closes.toLocaleString();
+            } else if (focusedData.opportunity_cost.success_benefit) {
+                document.getElementById('successValue').textContent = '$' + focusedData.opportunity_cost.success_benefit.value_of_higher_success.toLocaleString();
+            }
             
             // Update example
             if (focusedData.typical_example) {
@@ -663,7 +682,18 @@
         function createCharts() {
             if (!focusedData) return;
             
-            // Timeline Distribution Bar Chart
+            // Timeline Distribution Bar Chart - Use percentages if available
+            let sbaData, nonSbaData;
+            if (focusedData.timeline_distribution_percentage) {
+                // Use percentages
+                sbaData = Object.values(focusedData.timeline_distribution_percentage.sba);
+                nonSbaData = Object.values(focusedData.timeline_distribution_percentage.non_sba);
+            } else if (focusedData.timeline_distribution) {
+                // Fall back to counts
+                sbaData = Object.values(focusedData.timeline_distribution.sba);
+                nonSbaData = Object.values(focusedData.timeline_distribution.non_sba);
+            }
+            
             const timelineCtx = document.getElementById('timelineChart').getContext('2d');
             new Chart(timelineCtx, {
                 type: 'bar',
@@ -672,14 +702,14 @@
                     datasets: [
                         {
                             label: 'SBA Pre-Qualified',
-                            data: Object.values(focusedData.timeline_distribution.sba),
+                            data: sbaData,
                             backgroundColor: 'rgba(255, 107, 107, 0.7)',
                             borderColor: 'rgba(255, 107, 107, 1)',
                             borderWidth: 2
                         },
                         {
                             label: 'Non-SBA',
-                            data: Object.values(focusedData.timeline_distribution.non_sba),
+                            data: nonSbaData,
                             backgroundColor: 'rgba(54, 161, 87, 0.7)',
                             borderColor: 'rgba(54, 161, 87, 1)',
                             borderWidth: 2
@@ -692,8 +722,20 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Days on Market Distribution',
+                            text: focusedData.timeline_distribution_percentage ? 'Days on Market Distribution (% of Total)' : 'Days on Market Distribution',
                             font: { size: 14 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y;
+                                    if (focusedData.timeline_distribution_percentage) {
+                                        return label + ': ' + value + '%';
+                                    }
+                                    return label + ': ' + value + ' deals';
+                                }
+                            }
                         },
                         legend: {
                             position: 'bottom'
@@ -704,7 +746,15 @@
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'Number of Deals'
+                                text: focusedData.timeline_distribution_percentage ? 'Percentage of Deals' : 'Number of Deals'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    if (focusedData.timeline_distribution_percentage) {
+                                        return value + '%';
+                                    }
+                                    return value;
+                                }
                             }
                         }
                     }
