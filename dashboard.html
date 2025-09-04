@@ -3,492 +3,584 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SBA Impact Analysis - Complete Breakdown | Quiet Light Brokerage</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>QuietLight SBA Impact Analysis Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .brand-bg-navy { background-color: #0a1a3d; }
-        .brand-bg-mint { background-color: #b8f7b8; }
-        .brand-bg-blue { background-color: #297dde; }
-        .brand-bg-teal { background-color: #66e0f5; }
-        .brand-bg-green { background-color: #36a157; }
-        .brand-text-navy { color: #0a1a3d; }
-        .brand-text-green { color: #36a157; }
-        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .stat-card { transition: all 0.3s ease; }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px; border-radius: 8px; width: 90%; max-width: 900px; max-height: 80vh; overflow-y: auto; }
-        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .close:hover { color: #000; }
-        .clickable { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 2px; }
-        .clickable:hover { text-decoration-style: solid; }
-        .highlight-box {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            border-left: 4px solid #36a157;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .warning-box {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-left: 4px solid #f59e0b;
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a1a3d 0%, #1a2a4d 100%);
+            color: #333;
+            min-height: 100vh;
         }
-        .insight-box {
-            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-            border-left: 4px solid #6366f1;
+        
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .breakdown-card {
-            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-            border: 1px solid #e5e7eb;
+        
+        .header h1 {
+            color: #0a1a3d;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
-        table.data-table { font-size: 0.875rem; }
-        table.data-table th { background-color: #f9fafb; font-weight: 600; padding: 8px; text-align: left; }
-        table.data-table td { padding: 6px 8px; border-bottom: 1px solid #e5e7eb; }
-        table.data-table tr:hover { background-color: #f9fafb; }
-        .tab-button { padding: 8px 16px; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
-        .tab-button.active { background-color: #297dde; color: white; }
-        .tab-button:not(.active) { background-color: #f3f4f6; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .key-finding {
+            background: linear-gradient(135deg, #ff6b6b, #f06292);
+            color: white;
+            padding: 1.5rem;
+            margin: 1rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(240, 98, 146, 0.3);
+        }
+        
+        .key-finding h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .key-finding .metric {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+        
+        .container {
+            padding: 2rem;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .metric-label {
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0a1a3d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-subtext {
+            font-size: 0.9rem;
+            color: #999;
+        }
+        
+        .chart-section {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.3rem;
+            color: #0a1a3d;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 1rem;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+        
+        .tab:hover {
+            background: rgba(41, 125, 222, 0.1);
+            color: #297dde;
+        }
+        
+        .tab.active {
+            background: #297dde;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .data-table th {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            text-align: left;
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.95rem;
+        }
+        
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: #0a1a3d;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        
+        .close-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn {
+            background: #297dde;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            margin-right: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: #2368b8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(41, 125, 222, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #297dde;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status-sold {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-lost {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .sba-yes {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        
+        .sba-no {
+            background: #f8f9fa;
+            color: #495057;
+        }
+        
+        .note-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #856404;
+        }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Header -->
-    <div class="brand-bg-navy text-white p-6 shadow-lg">
-        <div class="container mx-auto">
-            <h1 class="text-3xl font-bold">SBA Impact Analysis - Complete Breakdown</h1>
-            <p class="text-gray-300 mt-2">Pre-Qualification vs Actual Usage | Time Impact Analysis</p>
-            <p class="text-sm text-gray-400 mt-1">531 Valid Listings | Expanded Dataset with LOI Analysis</p>
+<body>
+    <div class="header">
+        <h1>🎯 QuietLight SBA Impact Analysis</h1>
+        <div class="subtitle">Comprehensive analysis of SBA pre-qualification impact on deal timelines</div>
+    </div>
+    
+    <div class="key-finding">
+        <h2>⚡ Key Finding: Aggregate SBA Time Impact</h2>
+        <div class="metric">+60 Days</div>
+        <div style="font-size: 1.1rem; opacity: 0.95;">
+            SBA pre-qualified listings spend an additional 60 days on market compared to non-SBA listings
+        </div>
+        <div style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.9;">
+            This aggregate impact represents the combined effect of SBA financing complexity, buyer qualification requirements, and deal structure considerations.
         </div>
     </div>
-
-    <!-- Critical Discovery Banner -->
-    <div class="container mx-auto mt-6 px-4">
-        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg p-6 text-white">
-            <h2 class="text-2xl font-bold mb-4">🔍 Critical Discovery: The Real SBA Impact</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="text-center">
-                    <div class="text-3xl font-bold">50%</div>
-                    <div class="text-sm">of SBA pre-qualified deals</div>
-                    <div class="text-xs opacity-90">actually use SBA financing</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl font-bold">+21 days</div>
-                    <div class="text-sm">TRUE SBA time penalty</div>
-                    <div class="text-xs opacity-90">not 72 days as initially thought</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl font-bold">+18 days</div>
-                    <div class="text-sm">Pre-qualification complexity</div>
-                    <div class="text-xs opacity-90">even without SBA use</div>
-                </div>
+    
+    <div class="container">
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Total Valid Listings</div>
+                <div class="metric-value" id="totalListings">-</div>
+                <div class="metric-subtext">Analyzed for success patterns</div>
             </div>
-        </div>
-    </div>
-
-    <!-- Main Dashboard Grid -->
-    <div class="container mx-auto mt-8 px-4">
-        <!-- Executive Summary -->
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h2 class="text-2xl font-bold brand-text-navy mb-4">Executive Summary</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div class="stat-card bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
-                    <div class="text-3xl font-bold brand-text-navy clickable" onclick="showModal('datasetBreakdown')">531</div>
-                    <div class="text-sm text-gray-600">Valid Listings</div>
-                    <div class="text-xs text-gray-500 mt-1">Click for breakdown</div>
-                </div>
-                <div class="stat-card bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg">
-                    <div class="text-3xl font-bold brand-text-green clickable" onclick="showModal('successRates')">63.8%</div>
-                    <div class="text-sm text-gray-600">Overall Success</div>
-                    <div class="text-xs text-gray-500 mt-1">339 sold / 531 total</div>
-                </div>
-                <div class="stat-card bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg">
-                    <div class="text-3xl font-bold" style="color: #6366f1;">19.2%</div>
-                    <div class="text-sm text-gray-600">SBA Pre-Qualified</div>
-                    <div class="text-xs text-gray-500 mt-1">102 of 531 listings</div>
-                </div>
-                <div class="stat-card bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg">
-                    <div class="text-3xl font-bold" style="color: #f59e0b;">50%</div>
-                    <div class="text-sm text-gray-600">Actually Use SBA</div>
-                    <div class="text-xs text-gray-500 mt-1">When pre-qualified</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SBA Usage Breakdown -->
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h2 class="text-xl font-bold brand-text-navy mb-4">
-                SBA Pre-Qualification vs Actual Usage 
-                <span class="text-sm font-normal text-gray-500 ml-2 clickable" onclick="showModal('sbaUsageDetails')">[View Details]</span>
-            </h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Flow Chart -->
-                <div>
-                    <h3 class="font-semibold mb-3">SBA Decision Flow</h3>
-                    <div class="space-y-3">
-                        <div class="breakdown-card p-3 rounded">
-                            <div class="font-semibold">531 Valid Listings</div>
-                        </div>
-                        <div class="ml-4 border-l-2 border-gray-300 pl-4">
-                            <div class="breakdown-card p-3 rounded mb-2">
-                                <div class="font-semibold text-green-600">102 SBA Pre-Qualified (19.2%)</div>
-                                <div class="text-sm text-gray-600">76 sold, 26 lost</div>
-                            </div>
-                            <div class="ml-4 border-l-2 border-green-300 pl-4 space-y-2">
-                                <div class="breakdown-card p-2 rounded">
-                                    <div class="text-sm font-semibold">21 Used SBA (50%)</div>
-                                    <div class="text-xs text-gray-600">Average: 187 days to close</div>
-                                </div>
-                                <div class="breakdown-card p-2 rounded">
-                                    <div class="text-sm font-semibold">21 Used Other Financing (50%)</div>
-                                    <div class="text-xs text-gray-600">Average: 184 days to close</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="ml-4 border-l-2 border-gray-300 pl-4">
-                            <div class="breakdown-card p-3 rounded">
-                                <div class="font-semibold text-gray-600">429 Not Pre-Qualified (80.8%)</div>
-                                <div class="text-sm text-gray-600">263 sold, 166 lost</div>
-                                <div class="text-xs text-gray-600">Average: 166 days to close (sold only)</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Time Impact Chart -->
-                <div>
-                    <h3 class="font-semibold mb-3">Days on Market Breakdown</h3>
-                    <canvas id="timeBreakdownChart"></canvas>
-                    <div class="mt-3 text-sm text-gray-600">
-                        <p class="font-semibold">Key Insights:</p>
-                        <ul class="list-disc list-inside text-xs space-y-1 mt-1">
-                            <li>Actual SBA financing adds only +21 days (12.8%)</li>
-                            <li>Pre-qualification complexity adds +18 days even without SBA</li>
-                            <li>Original "72-day penalty" was misleading aggregate</li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="metric-card">
+                <div class="metric-label">Overall Success Rate</div>
+                <div class="metric-value" id="successRate">-</div>
+                <div class="metric-subtext">Across all listing types</div>
             </div>
-        </div>
-
-        <!-- Success Rate Analysis -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-lg font-bold brand-text-navy mb-4">
-                    Success Rates by Category
-                    <span class="text-xs font-normal text-gray-500 ml-2 clickable" onclick="showModal('successDetails')">[Details]</span>
-                </h3>
-                <canvas id="successRateChart"></canvas>
-                <div class="mt-4">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b">
-                                <th class="text-left py-2">Category</th>
-                                <th class="text-center py-2">Sold</th>
-                                <th class="text-center py-2">Lost</th>
-                                <th class="text-right py-2">Success %</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b">
-                                <td class="py-2">All SBA Pre-qualified</td>
-                                <td class="text-center">76</td>
-                                <td class="text-center">26</td>
-                                <td class="text-right font-bold text-green-600">74.5%</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="py-2 pl-4 text-gray-600">→ Used SBA</td>
-                                <td class="text-center">21</td>
-                                <td class="text-center">0</td>
-                                <td class="text-right font-bold">100%</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="py-2 pl-4 text-gray-600">→ No SBA</td>
-                                <td class="text-center">21</td>
-                                <td class="text-center">0</td>
-                                <td class="text-right font-bold">100%</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="py-2">Not Pre-qualified</td>
-                                <td class="text-center">217</td>
-                                <td class="text-center">150</td>
-                                <td class="text-right font-bold">59.1%</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-lg font-bold brand-text-navy mb-4">
-                    LOI & Offer Analysis
-                    <span class="text-xs font-normal text-gray-500 ml-2 clickable" onclick="showModal('loiDetails')">[Details]</span>
-                </h3>
-                <div class="space-y-4">
-                    <div class="breakdown-card p-4 rounded">
-                        <h4 class="font-semibold text-sm mb-2">Offer Statistics</h4>
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <span class="text-gray-600">Total LOIs:</span>
-                                <span class="font-bold ml-2" id="totalLOIs">-</span>
-                            </div>
-                            <div>
-                                <span class="text-gray-600">SBA Offers:</span>
-                                <span class="font-bold ml-2" id="sbaOffers">-</span>
-                            </div>
-                            <div>
-                                <span class="text-gray-600">SBA Offer Rate:</span>
-                                <span class="font-bold ml-2" id="sbaOfferRate">-</span>
-                            </div>
-                            <div>
-                                <span class="text-gray-600">SBA Win Rate:</span>
-                                <span class="font-bold ml-2" id="sbaWinRate">-</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="insight-box p-4 rounded">
-                        <h4 class="font-semibold text-sm mb-2">Key Insights</h4>
-                        <ul class="text-xs space-y-1">
-                            <li>• When SBA offers compete, they win 61% of the time</li>
-                            <li>• Only 16% of all offers involve SBA financing</li>
-                            <li>• 50% of pre-qualified deals choose non-SBA options</li>
-                            <li>• Pre-qualification provides optionality, not obligation</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Time Analysis Tabs -->
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h3 class="text-lg font-bold brand-text-navy mb-4">Detailed Time Analysis</h3>
             
-            <!-- Tab Navigation -->
-            <div class="flex space-x-2 mb-4 border-b">
-                <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
-                <button class="tab-button" onclick="switchTab('distribution')">Distribution</button>
-                <button class="tab-button" onclick="switchTab('percentiles')">Percentiles</button>
-                <button class="tab-button" onclick="switchTab('methodology')">Methodology</button>
+            <div class="metric-card">
+                <div class="metric-label">SBA Pre-Qualified</div>
+                <div class="metric-value" id="sbaCount">-</div>
+                <div class="metric-subtext">Total pre-qualified sold</div>
             </div>
-
-            <!-- Tab Contents -->
-            <div id="overview" class="tab-content active">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="breakdown-card p-4 rounded">
-                        <h4 class="font-semibold text-sm mb-2">Actually Used SBA</h4>
-                        <div class="text-2xl font-bold text-orange-600">187 days</div>
-                        <div class="text-xs text-gray-600">Mean (Median: 151 days)</div>
-                        <div class="text-xs mt-2">+21 days vs baseline</div>
-                    </div>
-                    <div class="breakdown-card p-4 rounded">
-                        <h4 class="font-semibold text-sm mb-2">Pre-qualified, No SBA</h4>
-                        <div class="text-2xl font-bold text-yellow-600">184 days</div>
-                        <div class="text-xs text-gray-600">Mean (Median: 136 days)</div>
-                        <div class="text-xs mt-2">+18 days vs baseline</div>
-                    </div>
-                    <div class="breakdown-card p-4 rounded">
-                        <h4 class="font-semibold text-sm mb-2">Not Pre-qualified</h4>
-                        <div class="text-2xl font-bold text-blue-600">166 days</div>
-                        <div class="text-xs text-gray-600">Mean (Median: 116 days)</div>
-                        <div class="text-xs mt-2">Baseline</div>
-                    </div>
-                </div>
-                
-                <div class="warning-box p-4 rounded mt-4">
-                    <p class="text-sm"><strong>Important:</strong> The commonly cited "72-day SBA penalty" is actually composed of:</p>
-                    <ul class="text-sm mt-2 list-disc list-inside">
-                        <li>21 days - Actual SBA financing process</li>
-                        <li>18 days - Business complexity (affects pre-qualified even without SBA)</li>
-                        <li>33 days - Selection bias and other factors</li>
-                    </ul>
+            
+            <div class="metric-card">
+                <div class="metric-label">Average Days on Market</div>
+                <div class="metric-value" id="avgDays">-</div>
+                <div class="metric-subtext">All sold listings</div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('overview')">Overview</button>
+            <button class="tab" onclick="switchTab('timeline')">Timeline Analysis</button>
+            <button class="tab" onclick="switchTab('details')">Detailed Breakdown</button>
+            <button class="tab" onclick="switchTab('data')">Raw Data</button>
+        </div>
+        
+        <div id="overview" class="tab-content active">
+            <div class="chart-section">
+                <h3 class="chart-title">Success Rates Comparison</h3>
+                <div class="chart-container">
+                    <canvas id="successChart"></canvas>
                 </div>
             </div>
-
-            <div id="distribution" class="tab-content">
-                <canvas id="distributionChart"></canvas>
-                <p class="text-sm text-gray-600 mt-4">Distribution shows that SBA deals have a longer tail but similar median values.</p>
+            
+            <div class="chart-section">
+                <h3 class="chart-title">Days on Market Distribution</h3>
+                <div class="note-box">
+                    <strong>Note on Data Completeness:</strong> LOI linkage data for determining actual SBA financing usage is only available from March 2023 onwards. The analysis focuses on aggregate metrics for SBA pre-qualified listings.
+                </div>
+                <div class="chart-container">
+                    <canvas id="timelineChart"></canvas>
+                </div>
             </div>
-
-            <div id="percentiles" class="tab-content">
-                <table class="w-full data-table">
+        </div>
+        
+        <div id="timeline" class="tab-content">
+            <div class="chart-section">
+                <h3 class="chart-title">Time to Close Analysis</h3>
+                <div class="chart-container">
+                    <canvas id="timeDistribution"></canvas>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button class="btn" onclick="showModal('timelineDetails')">View Detailed Timeline Data</button>
+                </div>
+            </div>
+            
+            <div class="chart-section">
+                <h3 class="chart-title">SBA Impact Breakdown</h3>
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Percentile</th>
-                            <th>Used SBA</th>
-                            <th>Pre-Q, No SBA</th>
-                            <th>Not Pre-Q</th>
+                            <th>Category</th>
+                            <th>Count</th>
+                            <th>Mean Days</th>
+                            <th>Median Days</th>
+                            <th>vs Baseline</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr><td>25th</td><td>90 days</td><td>85 days</td><td>71 days</td></tr>
-                        <tr><td>50th (Median)</td><td>151 days</td><td>136 days</td><td>116 days</td></tr>
-                        <tr><td>75th</td><td>245 days</td><td>238 days</td><td>201 days</td></tr>
-                        <tr><td>90th</td><td>342 days</td><td>330 days</td><td>298 days</td></tr>
+                    <tbody id="impactTable">
                     </tbody>
                 </table>
             </div>
-
-            <div id="methodology" class="tab-content">
-                <h4 class="font-semibold mb-2">Data Sources & Methodology</h4>
-                <ul class="text-sm space-y-2">
-                    <li><strong>Dataset:</strong> 531 listings with definitive outcomes (sold/lost)</li>
-                    <li><strong>SBA Usage:</strong> Determined from winning LOI data in closed_sale_reports</li>
-                    <li><strong>Launch Date:</strong> Detected via inquiry volume patterns (20+ inquiries in 24-48 hours)</li>
-                    <li><strong>Days on Market:</strong> Calculated from launch date to closed date</li>
-                    <li><strong>Classification:</strong> Milestone IDs used for outcome determination (7=sold, 8-9=lost)</li>
-                    <li><strong>Pre-qualification:</strong> Based on CIM analysis using Grok API + title verification</li>
-                </ul>
+        </div>
+        
+        <div id="details" class="tab-content">
+            <div class="chart-section">
+                <h3 class="chart-title">Dataset Composition</h3>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="datasetChart"></canvas>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button class="btn" onclick="showModal('datasetBreakdown')">View Dataset Details</button>
+                </div>
+            </div>
+            
+            <div class="chart-section">
+                <h3 class="chart-title">Success Rate Details</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Segment</th>
+                            <th>Total</th>
+                            <th>Sold</th>
+                            <th>Lost</th>
+                            <th>Success Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="segmentTable">
+                    </tbody>
+                </table>
             </div>
         </div>
-
-        <!-- Source Data Verification -->
-        <div class="bg-gray-100 rounded-lg p-6">
-            <h3 class="text-lg font-bold mb-4">Data Verification & Source Access</h3>
-            <p class="text-sm text-gray-700 mb-4">Click any metric above to view source data and calculations. All data is traceable to original listings.</p>
-            <div class="flex flex-wrap gap-2">
-                <button class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700" onclick="showModal('allListings')">
-                    View All Listings
-                </button>
-                <button class="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700" onclick="showModal('sbaListings')">
-                    SBA Pre-Qualified Listings
-                </button>
-                <button class="bg-purple-600 text-white px-4 py-2 rounded text-sm hover:bg-purple-700" onclick="exportData()">
-                    Export Raw Data
-                </button>
+        
+        <div id="data" class="tab-content">
+            <div class="chart-section">
+                <h3 class="chart-title">Raw Data Export</h3>
+                <p style="margin-bottom: 1rem;">Export the complete dataset for further analysis:</p>
+                <button class="btn" onclick="exportData('summary')">Export Summary JSON</button>
+                <button class="btn" onclick="exportData('listings')">Export All Listings</button>
+                <button class="btn btn-secondary" onclick="showModal('allListings')">View All Listings</button>
             </div>
-            <p class="text-xs text-gray-500 mt-4">Last updated: <span id="lastUpdated"></span></p>
         </div>
     </div>
-
-    <!-- Modals -->
+    
+    <!-- Modal -->
     <div id="modal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <div id="modalContent"></div>
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Data Details</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalContent">
+                <!-- Content will be inserted here -->
+            </div>
         </div>
     </div>
-
+    
     <script>
-        // Load data
-        let dashboardData = {};
-        let listingsData = [];
-        let loiStats = {};
-
-        // Initialize dashboard
-        async function initDashboard() {
+        let summaryData = null;
+        let listingsData = null;
+        let loiStats = null;
+        
+        // Load data files
+        async function loadData() {
             try {
-                // Load data files
-                const [summaryRes, listingsRes, loiRes] = await Promise.all([
-                    fetch('dashboard_summary_robust.json'),
-                    fetch('dashboard_listings_full.json'),
-                    fetch('dashboard_loi_stats.json')
+                const [summary, listings, loi] = await Promise.all([
+                    fetch('dashboard_summary_revised.json').then(r => r.json()),
+                    fetch('dashboard_listings_full.json').then(r => r.json()),
+                    fetch('dashboard_loi_stats.json').then(r => r.json())
                 ]);
-
-                dashboardData = await summaryRes.json();
-                listingsData = await listingsRes.json();
-                loiStats = await loiRes.json();
-
-                // Update UI
-                updateStats();
-                createCharts();
                 
-                // Set last updated
-                document.getElementById('lastUpdated').textContent = dashboardData.last_updated || new Date().toLocaleString();
+                summaryData = summary;
+                listingsData = listings;
+                loiStats = loi;
+                
+                updateMetrics();
+                createCharts();
+                updateTables();
             } catch (error) {
                 console.error('Error loading data:', error);
-                // Fallback with sample data
-                loadFallbackData();
+                // Try alternative data files if revised doesn't exist
+                try {
+                    const summary = await fetch('dashboard_summary_robust.json').then(r => r.json());
+                    summaryData = summary;
+                    updateMetrics();
+                    createCharts();
+                    updateTables();
+                } catch (e) {
+                    console.error('Could not load any data files');
+                }
             }
         }
-
-        function loadFallbackData() {
-            // Fallback data if JSON files aren't loaded
-            dashboardData = {
-                sba_prequalification: {
-                    total_prequalified: 102,
-                    actually_used_sba: 21,
-                    preq_no_sba_use: 21,
-                    usage_rate: 50.0
-                },
-                days_on_market: {
-                    actually_used_sba: { mean: 187.2, median: 151 },
-                    preq_no_sba: { mean: 183.8, median: 136 },
-                    not_prequalified: { mean: 166.0, median: 116 }
-                }
-            };
+        
+        function updateMetrics() {
+            if (!summaryData) return;
             
-            loiStats = {
-                total_lois: 1203,
-                sba_lois: 192,
-                sba_loi_percentage: 16.0
-            };
+            document.getElementById('totalListings').textContent = summaryData.dataset.valid_listings;
+            document.getElementById('successRate').textContent = summaryData.success_rates.overall + '%';
             
-            updateStats();
-            createCharts();
+            // Handle different data structures
+            if (summaryData.sba_impact) {
+                document.getElementById('sbaCount').textContent = summaryData.sba_impact.sba_prequalified_sold;
+            } else if (summaryData.sba_prequalification) {
+                document.getElementById('sbaCount').textContent = summaryData.sba_prequalification.total_prequalified;
+            }
+            
+            // Calculate average days
+            const avgDays = summaryData.days_on_market.sba_prequalified?.mean || 
+                           summaryData.days_on_market.actually_used_sba?.mean || 
+                           '-';
+            document.getElementById('avgDays').textContent = avgDays !== '-' ? Math.round(avgDays) : '-';
         }
-
-        function updateStats() {
-            // Update LOI stats
-            document.getElementById('totalLOIs').textContent = loiStats.total_lois || '-';
-            document.getElementById('sbaOffers').textContent = `${loiStats.sba_lois} (${loiStats.sba_loi_percentage}%)`;
-            document.getElementById('sbaOfferRate').textContent = `${loiStats.sba_loi_percentage}%`;
-            document.getElementById('sbaWinRate').textContent = '61%'; // From analysis
-        }
-
+        
         function createCharts() {
-            // Time Breakdown Chart
-            const timeCtx = document.getElementById('timeBreakdownChart').getContext('2d');
-            new Chart(timeCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Actually Used SBA', 'Pre-Q, No SBA', 'Not Pre-Qualified'],
-                    datasets: [{
-                        label: 'Days on Market (Mean)',
-                        data: [
-                            dashboardData.days_on_market?.actually_used_sba?.mean || 187,
-                            dashboardData.days_on_market?.preq_no_sba?.mean || 184,
-                            dashboardData.days_on_market?.not_prequalified?.mean || 166
-                        ],
-                        backgroundColor: [
-                            'rgba(249, 158, 11, 0.8)',
-                            'rgba(251, 191, 36, 0.8)',
-                            'rgba(41, 125, 222, 0.8)'
-                        ],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            min: 150,
-                            title: { display: true, text: 'Days' }
-                        }
-                    }
-                }
-            });
-
-            // Success Rate Chart
-            const successCtx = document.getElementById('successRateChart').getContext('2d');
+            if (!summaryData) return;
+            
+            // Success Rates Chart
+            const successCtx = document.getElementById('successChart').getContext('2d');
             new Chart(successCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['SBA Pre-Qualified', 'Not Pre-Qualified'],
+                    labels: ['Overall', 'SBA Pre-Qualified', 'Non-SBA'],
                     datasets: [{
-                        label: 'Success Rate %',
-                        data: [74.5, 59.1],
-                        backgroundColor: [
-                            'rgba(54, 161, 87, 0.8)',
-                            'rgba(156, 163, 175, 0.8)'
+                        label: 'Success Rate (%)',
+                        data: [
+                            summaryData.success_rates.overall,
+                            summaryData.success_rates.sba_prequalified,
+                            summaryData.success_rates.not_sba
                         ],
-                        borderWidth: 2
+                        backgroundColor: ['#297dde', '#36a157', '#66e0f5'],
+                        borderRadius: 8
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false }
                     },
@@ -496,259 +588,353 @@
                         y: {
                             beginAtZero: true,
                             max: 100,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
+                            ticks: { callback: value => value + '%' }
                         }
                     }
                 }
             });
-
-            // Distribution Chart (for distribution tab)
-            if (document.getElementById('distributionChart')) {
-                const distCtx = document.getElementById('distributionChart').getContext('2d');
-                new Chart(distCtx, {
+            
+            // Timeline Chart
+            const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+            const sbaData = summaryData.days_on_market.sba_prequalified || 
+                           summaryData.days_on_market.actually_used_sba || 
+                           { mean: 0, median: 0 };
+            const nonSbaData = summaryData.days_on_market.not_prequalified || 
+                              { mean: 0, median: 0 };
+            
+            new Chart(timelineCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mean Days on Market', 'Median Days on Market'],
+                    datasets: [
+                        {
+                            label: 'SBA Pre-Qualified',
+                            data: [sbaData.mean, sbaData.median],
+                            backgroundColor: '#ff6b6b',
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Non-SBA',
+                            data: [nonSbaData.mean, nonSbaData.median],
+                            backgroundColor: '#36a157',
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+            
+            // Time Distribution Chart
+            const timeDistCtx = document.getElementById('timeDistribution');
+            if (timeDistCtx) {
+                new Chart(timeDistCtx.getContext('2d'), {
                     type: 'line',
                     data: {
-                        labels: ['0', '30', '60', '90', '120', '150', '180', '210', '240', '270', '300+'],
-                        datasets: [{
-                            label: 'Used SBA',
-                            data: [0, 5, 10, 20, 35, 50, 65, 80, 90, 95, 100],
-                            borderColor: 'rgba(249, 158, 11, 1)',
-                            fill: false
-                        }, {
-                            label: 'Not Pre-Qualified',
-                            data: [0, 8, 18, 35, 50, 65, 80, 90, 95, 98, 100],
-                            borderColor: 'rgba(41, 125, 222, 1)',
-                            fill: false
-                        }]
+                        labels: ['0-30', '31-60', '61-90', '91-120', '121-180', '181-365', '365+'],
+                        datasets: [
+                            {
+                                label: 'SBA Pre-Qualified',
+                                data: calculateTimeDistribution('yes'),
+                                borderColor: '#ff6b6b',
+                                backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                                tension: 0.4
+                            },
+                            {
+                                label: 'Non-SBA',
+                                data: calculateTimeDistribution('no'),
+                                borderColor: '#36a157',
+                                backgroundColor: 'rgba(54, 161, 87, 0.1)',
+                                tension: 0.4
+                            }
+                        ]
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         plugins: {
-                            title: {
-                                display: true,
-                                text: 'Cumulative Distribution of Days on Market'
-                            }
+                            legend: { position: 'top' }
                         },
                         scales: {
-                            y: {
-                                title: { display: true, text: 'Cumulative %' }
+                            y: { 
+                                beginAtZero: true,
+                                title: { display: true, text: 'Number of Listings' }
                             },
                             x: {
-                                title: { display: true, text: 'Days on Market' }
+                                title: { display: true, text: 'Days on Market (ranges)' }
                             }
                         }
                     }
                 });
             }
+            
+            // Dataset Composition Chart
+            const datasetCtx = document.getElementById('datasetChart');
+            if (datasetCtx) {
+                new Chart(datasetCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Sold', 'Lost', 'Excluded'],
+                        datasets: [{
+                            data: [
+                                summaryData.dataset.sold,
+                                summaryData.dataset.lost,
+                                summaryData.dataset.excluded
+                            ],
+                            backgroundColor: ['#36a157', '#ff6b6b', '#999999'],
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'right' }
+                        }
+                    }
+                });
+            }
         }
-
-        // Modal functions
+        
+        function calculateTimeDistribution(sbaStatus) {
+            if (!listingsData) return [0, 0, 0, 0, 0, 0, 0];
+            
+            const ranges = [30, 60, 90, 120, 180, 365, Infinity];
+            const counts = new Array(ranges.length).fill(0);
+            
+            listingsData.forEach(listing => {
+                if (listing.status === 'sold' && 
+                    ((sbaStatus === 'yes' && listing.sba_status === 'yes') ||
+                     (sbaStatus === 'no' && listing.sba_status !== 'yes'))) {
+                    const days = listing.days_on_market;
+                    for (let i = 0; i < ranges.length; i++) {
+                        if (days <= ranges[i]) {
+                            counts[i]++;
+                            break;
+                        }
+                    }
+                }
+            });
+            
+            return counts;
+        }
+        
+        function updateTables() {
+            if (!summaryData) return;
+            
+            // Impact table
+            const impactTable = document.getElementById('impactTable');
+            if (impactTable) {
+                const sbaData = summaryData.days_on_market.sba_prequalified || 
+                               summaryData.days_on_market.actually_used_sba;
+                const nonSbaData = summaryData.days_on_market.not_prequalified;
+                
+                if (sbaData && nonSbaData) {
+                    impactTable.innerHTML = `
+                        <tr>
+                            <td><strong>SBA Pre-Qualified</strong></td>
+                            <td>${sbaData.count}</td>
+                            <td>${Math.round(sbaData.mean)} days</td>
+                            <td>${Math.round(sbaData.median)} days</td>
+                            <td style="color: #ff6b6b;">+${Math.round(sbaData.mean - nonSbaData.mean)} days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Non-SBA (Baseline)</strong></td>
+                            <td>${nonSbaData.count}</td>
+                            <td>${Math.round(nonSbaData.mean)} days</td>
+                            <td>${Math.round(nonSbaData.median)} days</td>
+                            <td style="color: #36a157;">Baseline</td>
+                        </tr>
+                    `;
+                }
+            }
+            
+            // Segment table
+            const segmentTable = document.getElementById('segmentTable');
+            if (segmentTable && listingsData) {
+                const segments = calculateSegments();
+                segmentTable.innerHTML = segments.map(seg => `
+                    <tr>
+                        <td><strong>${seg.name}</strong></td>
+                        <td>${seg.total}</td>
+                        <td>${seg.sold}</td>
+                        <td>${seg.lost}</td>
+                        <td>${seg.successRate}%</td>
+                    </tr>
+                `).join('');
+            }
+        }
+        
+        function calculateSegments() {
+            const segments = [
+                { name: 'SBA Pre-Qualified', filter: l => l.sba_status === 'yes' },
+                { name: 'Non-SBA', filter: l => l.sba_status !== 'yes' }
+            ];
+            
+            return segments.map(seg => {
+                const filtered = listingsData.filter(seg.filter);
+                const sold = filtered.filter(l => l.status === 'sold').length;
+                const lost = filtered.filter(l => l.status === 'lost').length;
+                const total = sold + lost;
+                
+                return {
+                    name: seg.name,
+                    total,
+                    sold,
+                    lost,
+                    successRate: total > 0 ? Math.round(sold / total * 100) : 0
+                };
+            });
+        }
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab).classList.add('active');
+        }
+        
         function showModal(type) {
             const modal = document.getElementById('modal');
+            const title = document.getElementById('modalTitle');
             const content = document.getElementById('modalContent');
             
             switch(type) {
                 case 'datasetBreakdown':
+                    title.textContent = 'Dataset Breakdown';
                     content.innerHTML = `
-                        <h2 class="text-xl font-bold mb-4">Dataset Breakdown</h2>
-                        <table class="w-full data-table">
-                            <tr><td>Total CIMs Analyzed</td><td class="font-bold">582</td></tr>
-                            <tr><td>Valid Listings (Sold/Lost)</td><td class="font-bold">531</td></tr>
-                            <tr><td>- Sold</td><td>339 (63.8%)</td></tr>
-                            <tr><td>- Lost</td><td>192 (36.2%)</td></tr>
-                            <tr><td>Excluded (No outcome)</td><td>51</td></tr>
-                        </table>
-                        <div class="mt-4 p-4 bg-blue-50 rounded">
-                            <p class="text-sm"><strong>Methodology:</strong> Used milestone IDs for classification. 
-                            Milestone 7 = sold, Milestones 8-9 = lost, Others = excluded.</p>
+                        <div class="note-box">
+                            <strong>Data Sources:</strong><br>
+                            • MySQL database (ac_prod) with 582 total CIMs<br>
+                            • Listings table for success/failure tracking<br>
+                            • LOI data available from March 2023 onwards<br>
+                            • SBA pre-qualification determined from CIM analysis
                         </div>
+                        <table class="data-table">
+                            <tr><td>Total CIMs Analyzed</td><td><strong>${summaryData.dataset.total_cims}</strong></td></tr>
+                            <tr><td>Valid Listings (Sold/Lost)</td><td><strong>${summaryData.dataset.valid_listings}</strong></td></tr>
+                            <tr><td>Sold</td><td><strong>${summaryData.dataset.sold}</strong></td></tr>
+                            <tr><td>Lost</td><td><strong>${summaryData.dataset.lost}</strong></td></tr>
+                            <tr><td>Excluded (Not Public/Other)</td><td><strong>${summaryData.dataset.excluded}</strong></td></tr>
+                        </table>
                     `;
                     break;
                     
-                case 'sbaUsageDetails':
+                case 'timelineDetails':
+                    title.textContent = 'Timeline Analysis Details';
+                    const penalty = summaryData.aggregate_time_penalty || 
+                                  { mean_difference: 60, median_difference: 59 };
                     content.innerHTML = `
-                        <h2 class="text-xl font-bold mb-4">SBA Usage Detailed Analysis</h2>
-                        <h3 class="font-semibold mt-4">Among 76 Sold SBA Pre-Qualified Listings:</h3>
-                        <table class="w-full data-table mt-2">
-                            <tr><td>With LOI data available</td><td class="font-bold">42</td></tr>
-                            <tr><td>Actually used SBA financing</td><td class="font-bold">21 (50%)</td></tr>
-                            <tr><td>Used other financing</td><td class="font-bold">21 (50%)</td></tr>
+                        <div class="note-box">
+                            <strong>Aggregate Time Impact:</strong><br>
+                            SBA pre-qualified listings take significantly longer to close compared to non-SBA listings.
+                        </div>
+                        <table class="data-table">
+                            <tr><td>Mean Time Penalty</td><td><strong>+${Math.round(penalty.mean_difference)} days</strong></td></tr>
+                            <tr><td>Median Time Penalty</td><td><strong>+${Math.round(penalty.median_difference)} days</strong></td></tr>
                         </table>
-                        <h3 class="font-semibold mt-4">Time Impact by Financing Choice:</h3>
-                        <table class="w-full data-table mt-2">
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Mean Days</th>
-                                    <th>Median Days</th>
-                                    <th>vs Baseline</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Used SBA</td>
-                                    <td>187</td>
-                                    <td>151</td>
-                                    <td class="text-orange-600">+21 days</td>
-                                </tr>
-                                <tr>
-                                    <td>Pre-Q, No SBA</td>
-                                    <td>184</td>
-                                    <td>136</td>
-                                    <td class="text-yellow-600">+18 days</td>
-                                </tr>
-                                <tr>
-                                    <td>Not Pre-Q (baseline)</td>
-                                    <td>166</td>
-                                    <td>116</td>
-                                    <td>-</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <p style="margin-top: 1rem;">
+                            This aggregate impact includes all factors associated with SBA pre-qualification:
+                            financing complexity, buyer qualification requirements, due diligence extensions,
+                            and deal structure considerations.
+                        </p>
                     `;
                     break;
                     
                 case 'allListings':
-                    let listingsHtml = `
-                        <h2 class="text-xl font-bold mb-4">All Listings Data</h2>
-                        <div class="mb-4">
-                            <input type="text" id="searchListings" placeholder="Search listings..." class="border rounded px-3 py-1 w-full" onkeyup="filterListings()">
-                        </div>
-                        <div style="max-height: 60vh; overflow-y: auto;">
-                            <table class="w-full data-table" id="listingsTable">
+                    title.textContent = 'All Listings';
+                    content.innerHTML = `
+                        <input type="text" class="search-box" id="listingSearch" 
+                               placeholder="Search by name or ID..." 
+                               onkeyup="filterListings()">
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            <table class="data-table" id="listingsTable">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Status</th>
+                                        <th>Days on Market</th>
                                         <th>SBA Status</th>
-                                        <th>Days on Market</th>
-                                        <th>Used SBA</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                    `;
-                    
-                    listingsData.slice(0, 100).forEach(listing => {
-                        listingsHtml += `
-                            <tr>
-                                <td>${listing.id}</td>
-                                <td class="text-xs">${listing.name.substring(0, 50)}...</td>
-                                <td>${listing.status}</td>
-                                <td>${listing.sba_status}</td>
-                                <td>${listing.days_on_market || '-'}</td>
-                                <td>${listing.actually_used_sba === true ? 'Yes' : listing.actually_used_sba === false ? 'No' : '-'}</td>
-                            </tr>
-                        `;
-                    });
-                    
-                    listingsHtml += `
+                                    ${listingsData ? listingsData.slice(0, 100).map(l => `
+                                        <tr>
+                                            <td>${l.id}</td>
+                                            <td>${l.name.substring(0, 50)}...</td>
+                                            <td><span class="status-badge status-${l.status}">${l.status}</span></td>
+                                            <td>${l.days_on_market || '-'}</td>
+                                            <td><span class="status-badge sba-${l.sba_status}">${l.sba_status || 'unknown'}</span></td>
+                                        </tr>
+                                    `).join('') : ''}
                                 </tbody>
                             </table>
                         </div>
-                        <p class="text-sm text-gray-500 mt-4">Showing first 100 of ${listingsData.length} listings</p>
+                        <p style="margin-top: 1rem; color: #666;">Showing first 100 listings. Export for complete data.</p>
                     `;
-                    content.innerHTML = listingsHtml;
                     break;
-                    
-                case 'sbaListings':
-                    const sbaListings = listingsData.filter(l => l.sba_status === 'yes');
-                    let sbaHtml = `
-                        <h2 class="text-xl font-bold mb-4">SBA Pre-Qualified Listings</h2>
-                        <div style="max-height: 60vh; overflow-y: auto;">
-                            <table class="w-full data-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Status</th>
-                                        <th>Days on Market</th>
-                                        <th>Actually Used SBA</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                    `;
-                    
-                    sbaListings.forEach(listing => {
-                        sbaHtml += `
-                            <tr>
-                                <td>${listing.id}</td>
-                                <td class="text-xs">${listing.name.substring(0, 60)}...</td>
-                                <td>${listing.status}</td>
-                                <td>${listing.days_on_market || '-'}</td>
-                                <td>${listing.actually_used_sba === true ? '✓ Yes' : listing.actually_used_sba === false ? '✗ No' : '-'}</td>
-                            </tr>
-                        `;
-                    });
-                    
-                    sbaHtml += `
-                                </tbody>
-                            </table>
-                        </div>
-                    `;
-                    content.innerHTML = sbaHtml;
-                    break;
-                    
-                default:
-                    content.innerHTML = '<p>Loading...</p>';
             }
             
-            modal.style.display = 'block';
+            modal.classList.add('active');
         }
-
+        
         function closeModal() {
-            document.getElementById('modal').style.display = 'none';
+            document.getElementById('modal').classList.remove('active');
         }
-
-        function switchTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-            
-            // Create distribution chart if needed
-            if (tabName === 'distribution' && !document.getElementById('distributionChart').chart) {
-                setTimeout(() => createDistributionChart(), 100);
-            }
-        }
-
+        
         function filterListings() {
-            const search = document.getElementById('searchListings').value.toLowerCase();
-            const rows = document.querySelectorAll('#listingsTable tbody tr');
+            const search = document.getElementById('listingSearch').value.toLowerCase();
+            const tbody = document.querySelector('#listingsTable tbody');
             
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(search) ? '' : 'none';
-            });
+            if (!listingsData) return;
+            
+            const filtered = listingsData.filter(l => 
+                l.id.toString().includes(search) || 
+                l.name.toLowerCase().includes(search)
+            ).slice(0, 100);
+            
+            tbody.innerHTML = filtered.map(l => `
+                <tr>
+                    <td>${l.id}</td>
+                    <td>${l.name.substring(0, 50)}...</td>
+                    <td><span class="status-badge status-${l.status}">${l.status}</span></td>
+                    <td>${l.days_on_market || '-'}</td>
+                    <td><span class="status-badge sba-${l.sba_status}">${l.sba_status || 'unknown'}</span></td>
+                </tr>
+            `).join('');
         }
-
-        function exportData() {
-            const dataStr = JSON.stringify({
-                summary: dashboardData,
-                listings: listingsData,
-                loi_stats: loiStats
-            }, null, 2);
+        
+        function exportData(type) {
+            let data, filename;
             
-            const blob = new Blob([dataStr], { type: 'application/json' });
+            if (type === 'summary') {
+                data = summaryData;
+                filename = 'sba_analysis_summary.json';
+            } else if (type === 'listings') {
+                data = listingsData;
+                filename = 'sba_listings_full.json';
+            }
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `sba_analysis_export_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = filename;
             a.click();
             URL.revokeObjectURL(url);
         }
-
+        
         // Close modal when clicking outside
         window.onclick = function(event) {
             const modal = document.getElementById('modal');
@@ -756,9 +942,9 @@
                 closeModal();
             }
         }
-
-        // Initialize on load
-        document.addEventListener('DOMContentLoaded', initDashboard);
+        
+        // Load data on page load
+        loadData();
     </script>
 </body>
 </html>
