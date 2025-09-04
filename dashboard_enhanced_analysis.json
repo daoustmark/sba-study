@@ -1,0 +1,141 @@
+{
+  "generated_at": "2025-09-04 08:15:02",
+  "overview": {
+    "total_valid": 531,
+    "sba_count": 102,
+    "sba_percentage": 19.2,
+    "non_sba_count": 429,
+    "non_sba_percentage": 80.8
+  },
+  "success_rates": {
+    "sba": {
+      "sold": 76,
+      "lost": 26,
+      "rate": 74.5
+    },
+    "non_sba": {
+      "sold": 263,
+      "lost": 166,
+      "rate": 61.3
+    },
+    "advantage": 13.2
+  },
+  "timeline_stats": {
+    "sba": {
+      "count": 76,
+      "mean": 237.6764705882353,
+      "median": 184.0,
+      "std_dev": 155.37661911131227,
+      "min": 26.0,
+      "max": 585.0,
+      "percentiles": {
+        "p10": 88.1,
+        "p25": 120.75,
+        "p50": 184.0,
+        "p75": 344.5,
+        "p90": 482.20000000000005
+      },
+      "outliers_400_plus": 15,
+      "outlier_rate": 19.7
+    },
+    "non_sba": {
+      "count": 263,
+      "mean": 177.82539682539684,
+      "median": 125.0,
+      "std_dev": 146.9461011502796,
+      "min": 11.0,
+      "max": 552.0,
+      "percentiles": {
+        "p10": 36.0,
+        "p25": 60.75,
+        "p50": 125.0,
+        "p75": 277.25,
+        "p90": 429.5000000000001
+      },
+      "outliers_400_plus": 31,
+      "outlier_rate": 11.8
+    },
+    "penalty": {
+      "mean_days": 59.9,
+      "median_days": 59.0,
+      "relative_increase": 33.7
+    }
+  },
+  "distributions": {
+    "sba": {
+      "0-30": 1,
+      "31-60": 3,
+      "61-90": 4,
+      "91-120": 9,
+      "121-180": 17,
+      "181-365": 18,
+      "365+": 16
+    },
+    "non_sba": {
+      "0-30": 21,
+      "31-60": 42,
+      "61-90": 36,
+      "91-120": 25,
+      "121-180": 36,
+      "181-365": 52,
+      "365+": 40
+    }
+  },
+  "opportunity_cost": {
+    "assumptions": {
+      "avg_commission_rate": 0.1,
+      "avg_listing_value": 2000000,
+      "working_days_per_year": 250
+    },
+    "calculations": {
+      "time_penalty_days": 59.9,
+      "commission_per_deal": 200000,
+      "daily_opportunity_cost": 547.95,
+      "total_opportunity_cost": 32795.0,
+      "deals_foregone": 0.34
+    }
+  },
+  "temporal_trends": [
+    {
+      "year": 2022,
+      "sba_count": 20,
+      "sba_mean": 341.3,
+      "non_sba_count": 93,
+      "non_sba_mean": 287.0967741935484
+    },
+    {
+      "year": 2023,
+      "sba_count": 17,
+      "sba_mean": 153.88235294117646,
+      "non_sba_count": 60,
+      "non_sba_mean": 116.36666666666666
+    },
+    {
+      "year": 2024,
+      "sba_count": 15,
+      "sba_mean": 180.6,
+      "non_sba_count": 55,
+      "non_sba_mean": 99.96363636363637
+    },
+    {
+      "year": 2025,
+      "sba_count": 10,
+      "sba_mean": 246.6,
+      "non_sba_count": 37,
+      "non_sba_mean": 121.13513513513513
+    }
+  ],
+  "risk_analysis": {
+    "variability": {
+      "sba_cv": 0.65,
+      "non_sba_cv": 0.83,
+      "interpretation": "Higher CV indicates less predictable timelines"
+    },
+    "long_tail_risk": {
+      "sba_over_365": 16,
+      "non_sba_over_365": 40,
+      "sba_over_365_pct": 21.1,
+      "non_sba_over_365_pct": 15.2
+    }
+  }
+}

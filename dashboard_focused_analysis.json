@@ -1,0 +1,93 @@
+{
+  "generated_at": "2025-09-04 08:26:53",
+  "key_metrics": {
+    "success_rate": {
+      "sba": 74.5,
+      "non_sba": 61.3,
+      "improvement_absolute": 13.2,
+      "improvement_relative": 21.5
+    },
+    "timeline": {
+      "sba_days": 238.0,
+      "non_sba_days": 178.0,
+      "penalty_days": 60.0,
+      "penalty_percent": 33.7
+    },
+    "sample_sizes": {
+      "sba_total": 102,
+      "sba_sold": 76,
+      "non_sba_total": 429,
+      "non_sba_sold": 263
+    }
+  },
+  "opportunity_cost": {
+    "assumptions": {
+      "avg_deal_size": 2000000,
+      "commission_rate": 0.1,
+      "annual_deals": 50
+    },
+    "per_deal": {
+      "commission": 200000,
+      "days_delayed": 60.0,
+      "cost_of_delay": 32795.0,
+      "deals_foregone": 0.34
+    },
+    "annual_impact": {
+      "sba_deals": 10,
+      "total_delay_cost": 327951.0,
+      "capacity_impact": 3.4
+    },
+    "success_benefit": {
+      "attempts_per_100_closes_sba": 1.3,
+      "attempts_per_100_closes_non_sba": 1.6,
+      "efficiency_gain": 0.3,
+      "value_of_higher_success": 264089.0
+    }
+  },
+  "inquiry_analysis": {
+    "with_sba_title": {
+      "count": 83,
+      "avg_inquiries": 403.3,
+      "success_rate": 79.5
+    },
+    "without_sba_title": {
+      "count": 448,
+      "avg_inquiries": 298.6,
+      "success_rate": 60.9
+    },
+    "impact": {
+      "inquiry_increase": 104.7,
+      "inquiry_increase_pct": 35.1,
+      "success_increase": 18.6
+    }
+  },
+  "actual_sba_usage": {
+    "period": "2023-2025",
+    "sba_prequalified_sold": 42,
+    "with_loi_data": 42,
+    "actually_used_sba": 21,
+    "used_alternative": 21,
+    "usage_rate": 50.0
+  },
+  "typical_example": {
+    "id": 32811,
+    "name": "5-Year-Old SaaS Business | WordPress and Shopify | Low Owner Workload",
+    "days_on_market": 191,
+    "inquiries": 360,
+    "closed_date": "2025-01-07 23:07:18"
+  },
+  "timeline_distribution": {
+    "sba": {
+      "0-90": 8,
+      "91-180": 26,
+      "181-365": 18,
+      "365+": 16
+    },
+    "non_sba": {
+      "0-90": 99,
+      "91-180": 61,
+      "181-365": 52,
+      "365+": 40
+    }
+  }
+}
