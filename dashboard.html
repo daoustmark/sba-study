@@ -3,13 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SBA Impact Analysis - Revised | Quiet Light Brokerage</title>
+    <title>SBA Impact Analysis - Expanded Dataset | Quiet Light Brokerage</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="listing_data.js"></script>
-    <script src="sba_verification_enhanced.js"></script>
-    <script src="chart_data.js"></script>
-    <script src="inquiry_stats.js"></script>
     <style>
         .brand-bg-navy { background-color: #0a1a3d; }
         .brand-bg-mint { background-color: #b8f7b8; }
@@ -21,7 +17,7 @@
         .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .stat-card { transition: all 0.3s ease; }
         .success-rate-increase { background: linear-gradient(135deg, #36a157 0%, #66e0f5 100%); }
-        .inquiry-increase { background: linear-gradient(135deg, #297dde 0%, #66e0f5 100%); }
+        .time-penalty { background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); }
         .highlight-box {
             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
             border-left: 4px solid #36a157;
@@ -30,10 +26,6 @@
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
             border-left: 4px solid #f59e0b;
         }
-        .insight-box {
-            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-            border-left: 4px solid #6366f1;
-        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -41,8 +33,27 @@
     <div class="brand-bg-navy text-white p-6 shadow-lg">
         <div class="container mx-auto">
             <h1 class="text-3xl font-bold">SBA Impact Analysis Dashboard</h1>
-            <p class="text-gray-300 mt-2">Evidence-Based Insights on SBA Financing in Digital M&A</p>
-            <p class="text-sm text-gray-400 mt-1">Based on 251 Listings (2021-2024) | Controlled for Deal Size</p>
+            <p class="text-gray-300 mt-2">Evidence-Based Insights on SBA Pre-Qualification in Digital M&A</p>
+            <p class="text-sm text-gray-400 mt-1">Based on 531 Valid Listings with Definitive Outcomes | Expanded Dataset</p>
+        </div>
+    </div>
+
+    <!-- Key Insights Banner -->
+    <div class="container mx-auto mt-6 px-4">
+        <div class="bg-gradient-to-r from-green-500 to-teal-500 rounded-lg p-6 text-white">
+            <h2 class="text-2xl font-bold mb-4">The SBA Trade-off</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <div class="text-4xl font-bold">+15.4%</div>
+                    <div class="text-lg">Higher Success Rate</div>
+                    <div class="text-sm opacity-90 mt-1">74.5% vs 59.1% for non-SBA</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold">+71.7 days</div>
+                    <div class="text-lg">Longer to Close</div>
+                    <div class="text-sm opacity-90 mt-1">238 days vs 166 days average</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -50,431 +61,234 @@
     <div class="container mx-auto mt-8 px-4">
         <div class="bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-2xl font-bold brand-text-navy mb-4">Executive Summary</h2>
-            <p class="text-gray-700 mb-4">
-                <strong>Key Finding:</strong> Advertising SBA in listing titles increases inquiries by 32% without sacrificing quality. 
-                The 10% higher success rate comes from buyer commitment, not financing type. Commission differences previously attributed 
-                to SBA are actually due to deal size selection - larger deals are more likely to be SBA-eligible.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="text-center p-4 bg-green-50 rounded">
-                    <div class="text-3xl font-bold brand-text-green">+32%</div>
-                    <div class="text-sm text-gray-600">More inquiries when SBA advertised</div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="stat-card bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
+                    <div class="text-3xl font-bold brand-text-navy">531</div>
+                    <div class="text-sm text-gray-600">Valid Listings Analyzed</div>
+                    <div class="text-xs text-gray-500 mt-1">582 total CIMs, 91.2% with outcomes</div>
                 </div>
-                <div class="text-center p-4 bg-blue-50 rounded">
-                    <div class="text-3xl font-bold text-blue-600">83.3%</div>
-                    <div class="text-sm text-gray-600">Success rate for SBA-eligible</div>
+                <div class="stat-card bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg">
+                    <div class="text-3xl font-bold brand-text-green">63.8%</div>
+                    <div class="text-sm text-gray-600">Overall Success Rate</div>
+                    <div class="text-xs text-gray-500 mt-1">339 sold, 192 lost</div>
                 </div>
-                <div class="text-center p-4 bg-yellow-50 rounded">
-                    <div class="text-3xl font-bold text-yellow-600">43%</div>
-                    <div class="text-sm text-gray-600">Actually use SBA when eligible</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Key Metrics Summary -->
-    <div class="container mx-auto mt-8 px-4">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <!-- Success Rate Card -->
-            <div class="bg-white rounded-lg shadow-lg p-6 card-hover stat-card">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="text-3xl">📈</div>
-                    <div class="success-rate-increase text-white text-xs px-2 py-1 rounded">+10%</div>
-                </div>
-                <h3 class="text-gray-600 text-sm font-semibold">Success Rate</h3>
-                <p class="text-2xl font-bold brand-text-navy mt-2">83.3% vs 75.5%</p>
-                <p class="text-xs text-gray-500 mt-1">SBA-eligible vs Non-SBA</p>
-            </div>
-
-            <!-- Inquiry Impact Card -->
-            <div class="bg-white rounded-lg shadow-lg p-6 card-hover stat-card">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="text-3xl">👥</div>
-                    <div class="inquiry-increase text-white text-xs px-2 py-1 rounded">+32%</div>
-                </div>
-                <h3 class="text-gray-600 text-sm font-semibold">Inquiry Impact</h3>
-                <p class="text-2xl font-bold brand-text-navy mt-2">505 vs 383</p>
-                <p class="text-xs text-gray-500 mt-1">When SBA advertised</p>
-            </div>
-
-            <!-- Time to Close Card -->
-            <div class="bg-white rounded-lg shadow-lg p-6 card-hover stat-card">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="text-3xl">⏱️</div>
-                    <div class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">+38 days</div>
-                </div>
-                <h3 class="text-gray-600 text-sm font-semibold">Extra LOI Time</h3>
-                <p class="text-2xl font-bold brand-text-navy mt-2">102 vs 64</p>
-                <p class="text-xs text-gray-500 mt-1">Days under LOI</p>
-            </div>
-
-            <!-- Usage Rate Card -->
-            <div class="bg-white rounded-lg shadow-lg p-6 card-hover stat-card">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="text-3xl">🎯</div>
-                    <div class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">43%</div>
-                </div>
-                <h3 class="text-gray-600 text-sm font-semibold">SBA Usage Rate</h3>
-                <p class="text-2xl font-bold brand-text-navy mt-2">15 of 35</p>
-                <p class="text-xs text-gray-500 mt-1">Eligible deals that used SBA</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- SBA Title Advertising Impact -->
-    <div class="container mx-auto mt-8 px-4">
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold brand-text-navy mb-4">SBA Title Advertising Impact</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h3 class="font-semibold mb-3">Advertising Prevalence</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li class="flex justify-between">
-                            <span>Total listings with SBA in title:</span>
-                            <span class="font-bold">57/251 (23%)</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>SBA-eligible that advertised:</span>
-                            <span class="font-bold">48/62 (77%)</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>Corrected misclassifications:</span>
-                            <span class="font-bold text-green-600">4 listings</span>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-semibold mb-3">Inquiry Impact</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li class="flex justify-between">
-                            <span>Inquiries when advertised:</span>
-                            <span class="font-bold">505 median</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>Inquiries when not advertised:</span>
-                            <span class="font-bold">383 median</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>Inquiry → LOI conversion:</span>
-                            <span class="font-bold">0.72% vs 0.68%</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="mt-4 p-3 bg-blue-50 rounded">
-                <p class="text-sm text-blue-800">
-                    <strong>Key Insight:</strong> Advertising SBA increases inquiry volume by 32% while maintaining similar quality (conversion rates nearly identical).
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Deal Size Context -->
-    <div class="container mx-auto mt-8 px-4">
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold brand-text-navy mb-4">Deal Size Context</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="p-3 text-left">Deal Size</th>
-                            <th class="p-3 text-center">SBA Eligible</th>
-                            <th class="p-3 text-center">Advertise SBA</th>
-                            <th class="p-3 text-center">Inquiry Impact</th>
-                            <th class="p-3 text-center">Usage Rate</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b">
-                            <td class="p-3 font-semibold">&lt;$500K</td>
-                            <td class="text-center">0%</td>
-                            <td class="text-center">10%</td>
-                            <td class="text-center text-green-600">+45%</td>
-                            <td class="text-center">0%</td>
-                        </tr>
-                        <tr class="border-b bg-gray-50">
-                            <td class="p-3 font-semibold">$500K-1M</td>
-                            <td class="text-center">23%</td>
-                            <td class="text-center">30%</td>
-                            <td class="text-center text-green-600">+37%</td>
-                            <td class="text-center">43%</td>
-                        </tr>
-                        <tr class="border-b">
-                            <td class="p-3 font-semibold">$1-2M</td>
-                            <td class="text-center">36%</td>
-                            <td class="text-center">36%</td>
-                            <td class="text-center text-red-600">-15%</td>
-                            <td class="text-center">50%</td>
-                        </tr>
-                        <tr class="border-b bg-gray-50">
-                            <td class="p-3 font-semibold">&gt;$2M</td>
-                            <td class="text-center">93%</td>
-                            <td class="text-center">79%</td>
-                            <td class="text-center text-green-600">+44%</td>
-                            <td class="text-center">62%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-4 p-3 bg-yellow-50 rounded">
-                <p class="text-sm text-yellow-800">
-                    <strong>Note:</strong> Commission differences previously attributed to SBA are actually due to deal size. 
-                    Larger deals are more likely to be SBA-eligible, creating a spurious correlation.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- The SBA Paradox -->
-    <div class="container mx-auto mt-8 px-4">
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold brand-text-navy mb-4">The SBA Paradox</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="highlight-box p-4 rounded">
-                    <h3 class="font-semibold text-green-800 mb-2">Usage Reality</h3>
-                    <p class="text-2xl font-bold">43%</p>
-                    <p class="text-sm text-gray-600 mt-1">Of SBA-eligible deals actually use SBA financing</p>
-                </div>
-                
-                <div class="warning-box p-4 rounded">
-                    <h3 class="font-semibold text-yellow-800 mb-2">Seller Guidance</h3>
-                    <p class="text-2xl font-bold">57%</p>
-                    <p class="text-sm text-gray-600 mt-1">Sellers guided to non-SBA buyers despite eligibility</p>
-                </div>
-                
-                <div class="insight-box p-4 rounded">
-                    <h3 class="font-semibold text-indigo-800 mb-2">Surprising Finding</h3>
-                    <p class="text-2xl font-bold">-36 days</p>
-                    <p class="text-sm text-gray-600 mt-1">SBA users close FASTER than non-users (within eligible)</p>
+                <div class="stat-card bg-gradient-to-br from-teal-50 to-teal-100 p-4 rounded-lg">
+                    <div class="text-3xl font-bold" style="color: #297dde;">19.2%</div>
+                    <div class="text-sm text-gray-600">SBA Pre-Qualified</div>
+                    <div class="text-xs text-gray-500 mt-1">102 of 531 valid listings</div>
                 </div>
             </div>
             
-            <div class="mt-6 p-4 bg-gray-50 rounded">
-                <h3 class="font-semibold mb-2">Why Sellers Are Guided Away from SBA:</h3>
-                <ul class="text-sm space-y-1 text-gray-700">
-                    <li>• Cash or conventional offers often available for quality deals</li>
-                    <li>• Brokers may prioritize speed over maximizing price</li>
-                    <li>• Sellers concerned about SBA process complexity</li>
-                    <li>• Multiple offers allow selection of simpler financing</li>
-                </ul>
+            <div class="highlight-box p-4 rounded-lg mb-4">
+                <h3 class="font-bold text-lg mb-2">Key Finding</h3>
+                <p class="text-gray-700">SBA pre-qualification creates a clear trade-off: listings with SBA pre-qualification achieve a <strong>26% higher relative success rate</strong> (74.5% vs 59.1%) but take <strong>43% longer to close</strong> (238 vs 166 days on average).</p>
+            </div>
+
+            <div class="warning-box p-4 rounded-lg">
+                <h3 class="font-bold text-lg mb-2">Important Context</h3>
+                <p class="text-gray-700">Only 19.2% of listings qualify for SBA financing, making it a premium feature. The extended closing time may be worth the significantly improved success rate for sellers who can afford to wait.</p>
             </div>
         </div>
     </div>
 
-    <!-- True Trade-offs Analysis -->
+    <!-- Success Rate Comparison -->
     <div class="container mx-auto mt-8 px-4">
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold brand-text-navy mb-4">True Financial Trade-offs (Same $1.5M Deal)</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="p-4 border rounded-lg">
-                    <h3 class="font-semibold mb-3 text-green-700">SBA Buyer Option</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li class="flex justify-between">
-                            <span>Extra wait time:</span>
-                            <span class="font-bold">38 days</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>Opportunity cost (@ 10%):</span>
-                            <span class="font-bold text-red-600">-$15,616</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>Price discount:</span>
-                            <span class="font-bold text-green-600">$0</span>
-                        </li>
-                        <li class="flex justify-between border-t pt-2">
-                            <span>Net cost to seller:</span>
-                            <span class="font-bold">-$15,616</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="p-4 border rounded-lg">
-                    <h3 class="font-semibold mb-3 text-blue-700">Cash Buyer Option</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li class="flex justify-between">
-                            <span>Extra wait time:</span>
-                            <span class="font-bold">0 days</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>Opportunity cost:</span>
-                            <span class="font-bold text-green-600">$0</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>Typical discount (3-5%):</span>
-                            <span class="font-bold text-red-600">-$45,000 to -$75,000</span>
-                        </li>
-                        <li class="flex justify-between border-t pt-2">
-                            <span>Net cost to seller:</span>
-                            <span class="font-bold text-red-600">-$45,000 to -$75,000</span>
-                        </li>
-                    </ul>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Success Rates Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-bold brand-text-navy mb-4">Success Rates by SBA Status</h3>
+                <canvas id="successChart"></canvas>
+                <div class="mt-4 text-sm text-gray-600">
+                    <p><strong>Sample sizes:</strong></p>
+                    <p>• SBA Pre-qualified: 102 listings</p>
+                    <p>• Not SBA eligible: 367 listings</p>
+                    <p>• Unknown status: 61 listings</p>
                 </div>
             </div>
-            
-            <div class="mt-4 p-3 bg-green-50 rounded">
-                <p class="text-sm text-green-800">
-                    <strong>Winner:</strong> SBA buyer saves seller $29,384 to $59,384 despite the wait
-                </p>
+
+            <!-- Days on Market Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-bold brand-text-navy mb-4">Days on Market (Sold Only)</h3>
+                <canvas id="daysChart"></canvas>
+                <div class="mt-4 text-sm text-gray-600">
+                    <p><strong>Median values:</strong></p>
+                    <p>• SBA Pre-qualified: 184 days</p>
+                    <p>• Not SBA eligible: 116 days</p>
+                    <p class="mt-2 font-semibold">SBA adds +68 median days</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Broker Strategy Guide -->
+    <!-- SBA Distribution -->
     <div class="container mx-auto mt-8 px-4">
         <div class="bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold brand-text-navy mb-4">Broker Strategy Guide</h2>
+            <h3 class="text-xl font-bold brand-text-navy mb-4">SBA Pre-Qualification Distribution</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <h3 class="font-semibold mb-3 text-green-700">When to Advertise SBA ✓</h3>
-                    <ul class="text-sm space-y-1 text-gray-700">
-                        <li>• Deal size $1-5M (SBA sweet spot)</li>
-                        <li>• Want more inquiries (+32% boost)</li>
-                        <li>• Can handle increased inquiry volume</li>
-                        <li>• Limited cash buyer pool expected</li>
-                        <li>• Seller values certainty over speed</li>
-                    </ul>
+                    <canvas id="sbaDistChart"></canvas>
                 </div>
-                
-                <div>
-                    <h3 class="font-semibold mb-3 text-red-700">When to Skip SBA ✗</h3>
-                    <ul class="text-sm space-y-1 text-gray-700">
-                        <li>• Deal size &lt;$500K (cash buyers available)</li>
-                        <li>• Seller needs quick close</li>
-                        <li>• Multiple cash offers expected</li>
-                        <li>• Broker at capacity</li>
-                        <li>• Testing market sentiment</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="mt-6">
-                <h3 class="font-semibold mb-3">Throughput Economics</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <div class="p-3 bg-green-50 rounded">
-                        <strong>SBA Focus:</strong>
-                        <ul class="mt-2 space-y-1">
-                            <li>• 1.75 deals attempted/year</li>
-                            <li>• 1.45 successful closes/year</li>
-                            <li>• 83.3% success rate</li>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-bold text-lg">Distribution Breakdown</h4>
+                        <ul class="space-y-2 mt-2">
+                            <li class="flex justify-between">
+                                <span>Not SBA Eligible:</span>
+                                <span class="font-bold">367 (69.1%)</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>SBA Pre-Qualified:</span>
+                                <span class="font-bold">102 (19.2%)</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>Unknown Status:</span>
+                                <span class="font-bold">61 (11.5%)</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>Partial SBA:</span>
+                                <span class="font-bold">1 (0.2%)</span>
+                            </li>
                         </ul>
                     </div>
-                    <div class="p-3 bg-blue-50 rounded">
-                        <strong>Non-SBA Focus:</strong>
-                        <ul class="mt-2 space-y-1">
-                            <li>• 2.12 deals attempted/year</li>
-                            <li>• 1.60 successful closes/year</li>
-                            <li>• 75.5% success rate</li>
-                        </ul>
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <p class="text-sm"><strong>Note:</strong> The low percentage of SBA-eligible listings (19.2%) reflects strict SBA requirements for online businesses, including profitability, business model, and operational criteria.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Charts Grid -->
+    <!-- Detailed Insights -->
     <div class="container mx-auto mt-8 px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Success Rate Chart -->
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-lg font-bold brand-text-navy mb-4">Success Rate by SBA Status</h3>
-                <div style="height: 300px;">
-                    <canvas id="successChart"></canvas>
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-xl font-bold brand-text-navy mb-4">Detailed Analysis</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-lg mb-3">Success Rate Analysis</h4>
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="text-left py-2">SBA Status</th>
+                                <th class="text-right py-2">Sold</th>
+                                <th class="text-right py-2">Lost</th>
+                                <th class="text-right py-2">Success %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="py-2">SBA Pre-qualified</td>
+                                <td class="text-right">76</td>
+                                <td class="text-right">26</td>
+                                <td class="text-right font-bold text-green-600">74.5%</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-2">Not SBA Eligible</td>
+                                <td class="text-right">217</td>
+                                <td class="text-right">150</td>
+                                <td class="text-right font-bold">59.1%</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-2">Unknown</td>
+                                <td class="text-right">45</td>
+                                <td class="text-right">16</td>
+                                <td class="text-right font-bold">73.8%</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
 
-            <!-- Inquiry Impact Chart -->
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-lg font-bold brand-text-navy mb-4">Inquiry Impact of SBA Advertising</h3>
-                <div style="height: 300px;">
-                    <canvas id="inquiryChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Time Comparison Chart -->
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-lg font-bold brand-text-navy mb-4">Days Under LOI Comparison</h3>
-                <div style="height: 300px;">
-                    <canvas id="loiChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Usage Rate Chart -->
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-lg font-bold brand-text-navy mb-4">SBA Usage When Eligible</h3>
-                <div style="height: 300px;">
-                    <canvas id="usageChart"></canvas>
+                <div>
+                    <h4 class="font-semibold text-lg mb-3">Time to Close Analysis</h4>
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="text-left py-2">SBA Status</th>
+                                <th class="text-right py-2">Mean</th>
+                                <th class="text-right py-2">Median</th>
+                                <th class="text-right py-2">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="py-2">SBA Pre-qualified</td>
+                                <td class="text-right font-bold text-orange-600">238 days</td>
+                                <td class="text-right">184 days</td>
+                                <td class="text-right">68</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-2">Not SBA Eligible</td>
+                                <td class="text-right font-bold">166 days</td>
+                                <td class="text-right">116 days</td>
+                                <td class="text-right">206</td>
+                            </tr>
+                            <tr class="border-b font-bold bg-gray-50">
+                                <td class="py-2">Difference</td>
+                                <td class="text-right text-orange-600">+72 days</td>
+                                <td class="text-right text-orange-600">+68 days</td>
+                                <td class="text-right">+43%</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Key Insights -->
-    <div class="container mx-auto mt-8 px-4 mb-12">
+    <!-- Methodology Note -->
+    <div class="container mx-auto mt-8 px-4 mb-8">
         <div class="bg-gray-100 rounded-lg p-6">
-            <h2 class="text-xl font-bold brand-text-navy mb-4">Key Insights & Recommendations</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                    <h3 class="font-semibold mb-2">📊 Data Reality</h3>
-                    <ul class="text-sm space-y-1 text-gray-700">
-                        <li>• SBA advertising drives +32% inquiries</li>
-                        <li>• Success rate genuinely +10% higher</li>
-                        <li>• Commission correlation was spurious</li>
-                        <li>• Only 43% of eligible deals use SBA</li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="font-semibold mb-2">💡 Strategic Insights</h3>
-                    <ul class="text-sm space-y-1 text-gray-700">
-                        <li>• Sellers often guided to simpler financing</li>
-                        <li>• SBA buyers more committed (close faster)</li>
-                        <li>• Trade-off: certainty vs complexity</li>
-                        <li>• Sweet spot: $1-5M deals</li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="font-semibold mb-2">🎯 Action Items</h3>
-                    <ul class="text-sm space-y-1 text-gray-700">
-                        <li>• Advertise SBA strategically by deal size</li>
-                        <li>• Educate sellers on true costs</li>
-                        <li>• Guide based on seller priorities</li>
-                        <li>• Track quality metrics, not just volume</li>
-                    </ul>
-                </div>
-            </div>
+            <h3 class="text-lg font-bold mb-2">Methodology & Data Quality</h3>
+            <ul class="text-sm text-gray-700 space-y-1">
+                <li>• <strong>Dataset:</strong> 531 listings with definitive outcomes (sold/lost) from 582 total CIMs</li>
+                <li>• <strong>Exclusions:</strong> 51 listings without proper outcomes (withdrawn, expired, incomplete data)</li>
+                <li>• <strong>Classification:</strong> Uses milestone IDs for accurate outcome determination (ID 7 = sold, IDs 8-9 = lost)</li>
+                <li>• <strong>Launch Date:</strong> Determined by inquiry volume patterns (20+ inquiries in 24-48 hours)</li>
+                <li>• <strong>SBA Classification:</strong> Based on CIM analysis using Grok API and title verification</li>
+            </ul>
+            <p class="text-xs text-gray-500 mt-4">Last updated: <span id="lastUpdated"></span></p>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="brand-bg-navy text-white p-6">
-        <div class="container mx-auto text-center">
-            <p class="text-sm">© 2024 Quiet Light Brokerage | Data Analysis Dashboard</p>
-            <p class="text-xs text-gray-400 mt-2">Based on controlled analysis of 251 listings with deal size adjustments</p>
-        </div>
-    </footer>
-
-    <!-- Chart Scripts -->
     <script>
-        // Configure Chart.js defaults
-        Chart.defaults.responsive = true;
-        Chart.defaults.maintainAspectRatio = false;
-        
+        // Set last updated
+        document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
         // Success Rate Chart
         const successCtx = document.getElementById('successChart').getContext('2d');
         new Chart(successCtx, {
             type: 'bar',
             data: {
-                labels: ['SBA Eligible', 'Not Eligible', 'Unknown'],
+                labels: ['SBA Pre-Qualified', 'Not SBA Eligible', 'Unknown'],
                 datasets: [{
                     label: 'Success Rate (%)',
-                    data: [83.3, 75.5, 76.0],
-                    backgroundColor: ['#36a157', '#297dde', '#66e0f5'],
-                    borderWidth: 0
+                    data: [74.5, 59.1, 73.8],
+                    backgroundColor: [
+                        'rgba(54, 161, 87, 0.8)',
+                        'rgba(41, 125, 222, 0.8)',
+                        'rgba(102, 224, 245, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 161, 87, 1)',
+                        'rgba(41, 125, 222, 1)',
+                        'rgba(102, 224, 245, 1)'
+                    ],
+                    borderWidth: 2
                 }]
             },
             options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
                 scales: {
                     y: {
                         beginAtZero: true,
@@ -485,13 +299,43 @@
                             }
                         }
                     }
-                },
+                }
+            }
+        });
+
+        // Days on Market Chart
+        const daysCtx = document.getElementById('daysChart').getContext('2d');
+        new Chart(daysCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mean Days', 'Median Days'],
+                datasets: [{
+                    label: 'SBA Pre-Qualified',
+                    data: [238, 184],
+                    backgroundColor: 'rgba(249, 158, 11, 0.8)',
+                    borderColor: 'rgba(249, 158, 11, 1)',
+                    borderWidth: 2
+                }, {
+                    label: 'Not SBA Eligible',
+                    data: [166, 116],
+                    backgroundColor: 'rgba(41, 125, 222, 0.8)',
+                    borderColor: 'rgba(41, 125, 222, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
                 plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.parsed.y.toFixed(1) + '%';
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' days';
                             }
                         }
                     }
@@ -499,93 +343,34 @@
             }
         });
 
-        // Inquiry Impact Chart
-        const inquiryCtx = document.getElementById('inquiryChart').getContext('2d');
-        new Chart(inquiryCtx, {
-            type: 'bar',
-            data: {
-                labels: ['SBA Advertised', 'Not Advertised'],
-                datasets: [{
-                    label: 'Median Inquiries',
-                    data: [505, 383],
-                    backgroundColor: ['#36a157', '#297dde'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Inquiries'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: { display: false }
-                }
-            }
-        });
-
-        // LOI Days Chart
-        const loiCtx = document.getElementById('loiChart').getContext('2d');
-        new Chart(loiCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Used SBA', 'Guided to Non-SBA', 'Non-Eligible'],
-                datasets: [{
-                    label: 'Median Days Under LOI',
-                    data: [102, 64, 38],
-                    backgroundColor: ['#36a157', '#f59e0b', '#297dde'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Days'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: { display: false }
-                }
-            }
-        });
-
-        // Usage Rate Chart
-        const usageCtx = document.getElementById('usageChart').getContext('2d');
-        new Chart(usageCtx, {
+        // SBA Distribution Pie Chart
+        const distCtx = document.getElementById('sbaDistChart').getContext('2d');
+        new Chart(distCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Used SBA (43%)', 'Guided to Alternative (57%)'],
+                labels: ['Not SBA Eligible', 'SBA Pre-Qualified', 'Unknown', 'Partial'],
                 datasets: [{
-                    data: [43, 57],
-                    backgroundColor: ['#36a157', '#f59e0b'],
-                    borderWidth: 0
+                    data: [367, 102, 61, 1],
+                    backgroundColor: [
+                        'rgba(156, 163, 175, 0.8)',
+                        'rgba(54, 161, 87, 0.8)',
+                        'rgba(102, 224, 245, 0.8)',
+                        'rgba(251, 191, 36, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(156, 163, 175, 1)',
+                        'rgba(54, 161, 87, 1)',
+                        'rgba(102, 224, 245, 1)',
+                        'rgba(251, 191, 36, 1)'
+                    ],
+                    borderWidth: 2
                 }]
             },
             options: {
+                responsive: true,
                 plugins: {
-                    legend: { 
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            font: {
-                                size: 12
-                            }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.label;
-                            }
-                        }
+                    legend: {
+                        position: 'bottom'
                     }
                 }
             }
