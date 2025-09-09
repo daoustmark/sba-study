@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Analyze median multiples (asking price / SDE) for SBA vs non-SBA deals.
+Comprehensive median multiples analysis combining all data sources.
 """
 
 import pandas as pd
@@ -23,7 +23,7 @@ def get_db_connection():
 
 def main():
     print("=" * 80)
-    print("SBA vs Non-SBA Median Multiple Analysis")
+    print("COMPREHENSIVE SBA vs Non-SBA Median Multiple Analysis")
     print("=" * 80)
     print()
     
@@ -36,17 +36,16 @@ def main():
     non_sba_ids = df_classification[df_classification['sba_status'] == 'no']['id'].tolist()
     unknown_ids = df_classification[df_classification['sba_status'] == 'unknown']['id'].tolist()
     
-    print(f"Found {len(sba_ids)} SBA pre-qualified listings")
-    print(f"Found {len(non_sba_ids)} non-SBA listings")
-    print(f"Found {len(unknown_ids)} unknown status listings")
-    print()
+    print(f"Classification from CSV:")
+    print(f"  SBA pre-qualified: {len(sba_ids)}")
+    print(f"  Non-SBA: {len(non_sba_ids)}")
+    print(f"  Unknown: {len(unknown_ids)}")
     
-    # Connect to database
-    print("Connecting to database...")
+    # 1. Get database data
+    print("\n1. Fetching database data...")
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Query for asking price and SDE data
     all_ids = sba_ids + non_sba_ids + unknown_ids
     id_list = ','.join(map(str, all_ids))
     
@@ -57,58 +56,98 @@ def main():
         l.asking_at_close,
         l.sde_at_close,
         l.revenue_at_close,
-        l.closed_at,
-        l.closed_commission,
         l.capsule_expected_value
     FROM listings l
     WHERE l.id IN ({id_list})
     """
     
-    print("Fetching listing data from database...")
     cursor.execute(query)
-    listings_data = cursor.fetchall()
+    db_data = cursor.fetchall()
     cursor.close()
     conn.close()
     
-    # Convert to DataFrame
-    df_listings = pd.DataFrame(listings_data)
-    
-    # Use the asking_at_close and sde_at_close for closed deals
-    # For active deals, use capsule_expected_value as asking price
-    df_listings['asking_price'] = df_listings.apply(
+    df_db = pd.DataFrame(db_data)
+    df_db['source'] = 'database'
+    df_db['asking_price'] = df_db.apply(
         lambda row: row['asking_at_close'] if pd.notna(row['asking_at_close']) and row['asking_at_close'] > 0 
         else row['capsule_expected_value'] if pd.notna(row['capsule_expected_value']) and row['capsule_expected_value'] > 0
         else None,
         axis=1
     )
+    df_db['sde'] = df_db['sde_at_close']
     
-    df_listings['sde'] = df_listings['sde_at_close']
+    # 2. Load CIM analysis data
+    print("2. Loading CIM analysis data...")
+    with open('cim_analysis_results_20250829_154455.json', 'r') as f:
+        cim_data = json.load(f)
+    
+    df_cim = pd.DataFrame(cim_data)
+    df_cim['source'] = 'cim'
+    df_cim['id'] = df_cim['listing_id']
+    df_cim['asking_price'] = pd.to_numeric(df_cim['asking_price'], errors='coerce')
+    df_cim['sde'] = pd.to_numeric(df_cim['sde'], errors='coerce')
+    
+    # Map CIM SBA status to our classification
+    df_cim['cim_sba'] = df_cim['sba_eligible']
+    
+    # 3. Merge data sources, preferring database data when available
+    print("3. Merging data sources...")
+    
+    # Start with all IDs
+    all_data = []
+    
+    for listing_id in all_ids:
+        record = {'id': listing_id}
+        
+        # Get SBA status from CSV
+        if listing_id in sba_ids:
+            record['sba_status'] = 'yes'
+        elif listing_id in non_sba_ids:
+            record['sba_status'] = 'no'
+        else:
+            record['sba_status'] = 'unknown'
+        
+        # Try to get financials from database first
+        db_row = df_db[df_db['id'] == listing_id]
+        if not db_row.empty:
+            db_asking = db_row.iloc[0]['asking_price']
+            db_sde = db_row.iloc[0]['sde']
+            if pd.notna(db_asking) and pd.notna(db_sde) and db_asking > 0 and db_sde > 0:
+                record['asking_price'] = db_asking
+                record['sde'] = db_sde
+                record['source'] = 'database'
+                record['name'] = db_row.iloc[0]['name']
+                all_data.append(record)
+                continue
+        
+        # If no database data, try CIM
+        cim_row = df_cim[df_cim['id'] == listing_id]
+        if not cim_row.empty:
+            cim_asking = cim_row.iloc[0]['asking_price']
+            cim_sde = cim_row.iloc[0]['sde']
+            if pd.notna(cim_asking) and pd.notna(cim_sde) and cim_asking > 0 and cim_sde > 0:
+                record['asking_price'] = cim_asking
+                record['sde'] = cim_sde
+                record['source'] = 'cim'
+                record['name'] = f"Listing {listing_id}"
+                all_data.append(record)
+    
+    df_combined = pd.DataFrame(all_data)
     
     # Calculate multiples
-    df_listings['multiple'] = df_listings.apply(
-        lambda row: row['asking_price'] / row['sde'] if pd.notna(row['sde']) and row['sde'] > 0 and pd.notna(row['asking_price']) and row['asking_price'] > 0 else None,
-        axis=1
-    )
-    
-    # Add SBA status
-    def get_sba_status(listing_id):
-        if listing_id in sba_ids:
-            return 'yes'
-        elif listing_id in non_sba_ids:
-            return 'no'
-        else:
-            return 'unknown'
-    
-    df_listings['sba_status'] = df_listings['id'].apply(get_sba_status)
+    df_combined['multiple'] = df_combined['asking_price'] / df_combined['sde']
     
     # Filter for valid multiples (reasonable range: 0.5 to 10x)
-    df_valid = df_listings[
-        (df_listings['multiple'].notna()) & 
-        (df_listings['multiple'] > 0.5) & 
-        (df_listings['multiple'] < 10)
+    df_valid = df_combined[
+        (df_combined['multiple'] >= 0.5) & 
+        (df_combined['multiple'] <= 10)
     ].copy()
     
-    print(f"\nFiltered to {len(df_valid)} listings with valid multiples (0.5x - 10x)")
+    print(f"\nData sources combined:")
+    print(f"  Total with financials: {len(df_combined)}")
+    print(f"  Valid multiples (0.5x-10x): {len(df_valid)}")
+    print(f"  From database: {len(df_valid[df_valid['source'] == 'database'])}")
+    print(f"  From CIM: {len(df_valid[df_valid['source'] == 'cim'])}")
     
     # Separate by SBA status
     sba_multiples = df_valid[df_valid['sba_status'] == 'yes']['multiple'].values
@@ -118,6 +157,7 @@ def main():
     # Calculate statistics
     results = {
         'timestamp': datetime.now().isoformat(),
+        'data_sources': 'Combined (Database + CIM)',
         'sba_prequalified': {
             'count': len(sba_multiples),
             'median': float(np.median(sba_multiples)) if len(sba_multiples) > 0 else None,
@@ -137,16 +177,6 @@ def main():
             'max': float(np.max(non_sba_multiples)) if len(non_sba_multiples) > 0 else None,
             'q25': float(np.percentile(non_sba_multiples, 25)) if len(non_sba_multiples) > 0 else None,
             'q75': float(np.percentile(non_sba_multiples, 75)) if len(non_sba_multiples) > 0 else None
-        },
-        'unknown': {
-            'count': len(unknown_multiples),
-            'median': float(np.median(unknown_multiples)) if len(unknown_multiples) > 0 else None,
-            'mean': float(np.mean(unknown_multiples)) if len(unknown_multiples) > 0 else None,
-            'std': float(np.std(unknown_multiples)) if len(unknown_multiples) > 0 else None,
-            'min': float(np.min(unknown_multiples)) if len(unknown_multiples) > 0 else None,
-            'max': float(np.max(unknown_multiples)) if len(unknown_multiples) > 0 else None,
-            'q25': float(np.percentile(unknown_multiples, 25)) if len(unknown_multiples) > 0 else None,
-            'q75': float(np.percentile(unknown_multiples, 75)) if len(unknown_multiples) > 0 else None
         }
     }
     
@@ -162,7 +192,7 @@ def main():
     
     # Print results
     print("\n" + "=" * 80)
-    print("RESULTS: MEDIAN MULTIPLES ANALYSIS")
+    print("RESULTS: COMPREHENSIVE MEDIAN MULTIPLES ANALYSIS")
     print("=" * 80)
     
     print("\n📊 SBA Pre-qualified Deals:")
@@ -181,12 +211,6 @@ def main():
         print(f"   Range: {results['non_sba']['min']:.2f}x - {results['non_sba']['max']:.2f}x")
         print(f"   IQR: {results['non_sba']['q25']:.2f}x - {results['non_sba']['q75']:.2f}x")
     
-    print("\n📊 Unknown Status Deals:")
-    print(f"   Count: {results['unknown']['count']} listings")
-    if results['unknown']['median']:
-        print(f"   Median Multiple: {results['unknown']['median']:.2f}x")
-        print(f"   Mean Multiple: {results['unknown']['mean']:.2f}x")
-    
     if 'comparison' in results:
         print("\n" + "=" * 80)
         print("KEY FINDING:")
@@ -200,15 +224,15 @@ def main():
             print(f"   Difference: {results['comparison']['median_difference']:.2f}x")
             print(f"   Percentage: {results['comparison']['median_difference_percent']:.1f}%")
     
-    # Save results to JSON
-    output_file = 'median_multiples_analysis.json'
+    # Save results
+    output_file = 'comprehensive_multiples_analysis.json'
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
     print(f"\n💾 Results saved to {output_file}")
     
-    # Also save detailed data to CSV for verification
-    csv_file = 'median_multiples_details.csv'
-    df_valid[['id', 'name', 'asking_price', 'sde', 'multiple', 'sba_status']].to_csv(csv_file, index=False)
+    # Save detailed data
+    csv_file = 'comprehensive_multiples_details.csv'
+    df_valid.to_csv(csv_file, index=False)
     print(f"💾 Detailed data saved to {csv_file}")
     
     # Distribution analysis
@@ -216,7 +240,6 @@ def main():
     print("DISTRIBUTION ANALYSIS:")
     print("=" * 80)
     
-    # Multiple ranges
     ranges = [(0, 2), (2, 3), (3, 4), (4, 5), (5, 10)]
     
     for status, multiples in [('SBA', sba_multiples), ('Non-SBA', non_sba_multiples)]:
@@ -226,6 +249,15 @@ def main():
                 count = np.sum((multiples >= low) & (multiples < high))
                 pct = (count / len(multiples)) * 100
                 print(f"   {low}x-{high}x: {count} deals ({pct:.1f}%)")
+    
+    print("\n" + "=" * 80)
+    print("DATA LIMITATIONS:")
+    print("=" * 80)
+    print("This analysis combines all available financial data sources:")
+    print("1. Database: asking_at_close and sde_at_close (mostly closed deals)")
+    print("2. CIM Analysis: Extracted asking price and SDE from documents")
+    print("3. Only ~30% of listings have complete financial data available")
+    print("4. Results are based on the best available data")
 
 if __name__ == "__main__":
     main()

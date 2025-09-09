@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Analyze median multiples (asking price / SDE) for SBA vs non-SBA deals.
+Analyze median multiples using listing_custom_fields table for financial data.
 """
 
 import pandas as pd
@@ -23,7 +23,7 @@ def get_db_connection():
 
 def main():
     print("=" * 80)
-    print("SBA vs Non-SBA Median Multiple Analysis")
+    print("SBA vs Non-SBA Median Multiple Analysis (Using Custom Fields)")
     print("=" * 80)
     print()
     
@@ -46,7 +46,25 @@ def main():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Query for asking price and SDE data
+    # First, check what fields are available in listing_custom_fields
+    cursor.execute("""
+        SELECT DISTINCT field_name 
+        FROM listing_custom_fields 
+        WHERE field_name LIKE '%sde%' 
+           OR field_name LIKE '%cash%' 
+           OR field_name LIKE '%ask%'
+           OR field_name LIKE '%price%'
+           OR field_name LIKE '%revenue%'
+        ORDER BY field_name
+    """)
+    
+    fields = cursor.fetchall()
+    print("Available financial fields in listing_custom_fields:")
+    for f in fields:
+        print(f"  - {f['field_name']}")
+    print()
+    
+    # Query for financial data joining with custom fields
     all_ids = sba_ids + non_sba_ids + unknown_ids
     id_list = ','.join(map(str, all_ids))
     
@@ -54,14 +72,18 @@ def main():
     SELECT 
         l.id,
         l.name,
+        l.capsule_expected_value,
         l.asking_at_close,
         l.sde_at_close,
-        l.revenue_at_close,
-        l.closed_at,
-        l.closed_commission,
-        l.capsule_expected_value
+        MAX(CASE WHEN cf.field_name = 'sde' THEN cf.field_value END) as sde_custom,
+        MAX(CASE WHEN cf.field_name = 'cashflow' THEN cf.field_value END) as cashflow,
+        MAX(CASE WHEN cf.field_name = 'asking_price' THEN cf.field_value END) as asking_price_custom,
+        MAX(CASE WHEN cf.field_name = 'asking' THEN cf.field_value END) as asking_custom,
+        MAX(CASE WHEN cf.field_name = 'revenue' THEN cf.field_value END) as revenue_custom
     FROM listings l
+    LEFT JOIN listing_custom_fields cf ON l.id = cf.listing_id
     WHERE l.id IN ({id_list})
+    GROUP BY l.id, l.name, l.capsule_expected_value, l.asking_at_close, l.sde_at_close
     """
     
     print("Fetching listing data from database...")
@@ -73,16 +95,60 @@ def main():
     # Convert to DataFrame
     df_listings = pd.DataFrame(listings_data)
     
-    # Use the asking_at_close and sde_at_close for closed deals
-    # For active deals, use capsule_expected_value as asking price
-    df_listings['asking_price'] = df_listings.apply(
-        lambda row: row['asking_at_close'] if pd.notna(row['asking_at_close']) and row['asking_at_close'] > 0 
-        else row['capsule_expected_value'] if pd.notna(row['capsule_expected_value']) and row['capsule_expected_value'] > 0
-        else None,
-        axis=1
-    )
+    print(f"Retrieved {len(df_listings)} listings from database")
     
-    df_listings['sde'] = df_listings['sde_at_close']
+    # Determine asking price (prioritize custom fields, then at_close, then expected_value)
+    def get_asking_price(row):
+        # Try custom fields first
+        for field in ['asking_price_custom', 'asking_custom']:
+            if pd.notna(row.get(field)):
+                try:
+                    val = float(str(row[field]).replace(',', '').replace('$', ''))
+                    if val > 0:
+                        return val
+                except:
+                    pass
+        
+        # Then try asking_at_close
+        if pd.notna(row.get('asking_at_close')) and row['asking_at_close'] > 0:
+            return row['asking_at_close']
+        
+        # Finally try capsule_expected_value
+        if pd.notna(row.get('capsule_expected_value')) and row['capsule_expected_value'] > 0:
+            return row['capsule_expected_value']
+        
+        return None
+    
+    # Determine SDE (prioritize custom fields, then at_close)
+    def get_sde(row):
+        # Try custom fields first
+        for field in ['sde_custom', 'cashflow']:
+            if pd.notna(row.get(field)):
+                try:
+                    val = float(str(row[field]).replace(',', '').replace('$', ''))
+                    if val > 0:
+                        return val
+                except:
+                    pass
+        
+        # Then try sde_at_close
+        if pd.notna(row.get('sde_at_close')) and row['sde_at_close'] > 0:
+            return row['sde_at_close']
+        
+        return None
+    
+    df_listings['asking_price'] = df_listings.apply(get_asking_price, axis=1)
+    df_listings['sde'] = df_listings.apply(get_sde, axis=1)
+    
+    # Check how many have data
+    has_asking = df_listings['asking_price'].notna().sum()
+    has_sde = df_listings['sde'].notna().sum()
+    has_both = ((df_listings['asking_price'].notna()) & (df_listings['sde'].notna())).sum()
+    
+    print(f"\nData availability:")
+    print(f"  Has asking price: {has_asking}/{len(df_listings)}")
+    print(f"  Has SDE/cashflow: {has_sde}/{len(df_listings)}")
+    print(f"  Has both (can calculate multiple): {has_both}/{len(df_listings)}")
     
     # Calculate multiples
     df_listings['multiple'] = df_listings.apply(
@@ -118,6 +184,7 @@ def main():
     # Calculate statistics
     results = {
         'timestamp': datetime.now().isoformat(),
+        'data_source': 'listing_custom_fields',
         'sba_prequalified': {
             'count': len(sba_multiples),
             'median': float(np.median(sba_multiples)) if len(sba_multiples) > 0 else None,
@@ -141,12 +208,7 @@ def main():
         'unknown': {
             'count': len(unknown_multiples),
             'median': float(np.median(unknown_multiples)) if len(unknown_multiples) > 0 else None,
-            'mean': float(np.mean(unknown_multiples)) if len(unknown_multiples) > 0 else None,
-            'std': float(np.std(unknown_multiples)) if len(unknown_multiples) > 0 else None,
-            'min': float(np.min(unknown_multiples)) if len(unknown_multiples) > 0 else None,
-            'max': float(np.max(unknown_multiples)) if len(unknown_multiples) > 0 else None,
-            'q25': float(np.percentile(unknown_multiples, 25)) if len(unknown_multiples) > 0 else None,
-            'q75': float(np.percentile(unknown_multiples, 75)) if len(unknown_multiples) > 0 else None
+            'mean': float(np.mean(unknown_multiples)) if len(unknown_multiples) > 0 else None
         }
     }
     
@@ -185,7 +247,6 @@ def main():
     print(f"   Count: {results['unknown']['count']} listings")
     if results['unknown']['median']:
         print(f"   Median Multiple: {results['unknown']['median']:.2f}x")
-        print(f"   Mean Multiple: {results['unknown']['mean']:.2f}x")
     
     if 'comparison' in results:
         print("\n" + "=" * 80)
@@ -201,13 +262,13 @@ def main():
             print(f"   Percentage: {results['comparison']['median_difference_percent']:.1f}%")
     
     # Save results to JSON
-    output_file = 'median_multiples_analysis.json'
+    output_file = 'median_multiples_custom_fields.json'
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
     print(f"\n💾 Results saved to {output_file}")
     
     # Also save detailed data to CSV for verification
-    csv_file = 'median_multiples_details.csv'
+    csv_file = 'median_multiples_custom_fields.csv'
     df_valid[['id', 'name', 'asking_price', 'sde', 'multiple', 'sba_status']].to_csv(csv_file, index=False)
     print(f"💾 Detailed data saved to {csv_file}")
     

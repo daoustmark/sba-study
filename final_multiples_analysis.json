@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-09-09T15:19:59.142314",
+  "data_source": "comprehensive_database_query",
+  "total_listings_with_data": 37179,
+  "total_valid_multiples": 1527,
+  "sba_prequalified": {
+    "count": 56,
+    "median": 3.221170967191096,
+    "mean": 3.35499293531547,
+    "std": 0.8973341431863195,
+    "min": 1.6823739213689017,
+    "max": 6.948296567194081,
+    "q25": 2.8617553524970645,
+    "q75": 3.767174593559661
+  },
+  "non_sba": {
+    "count": 148,
+    "median": 2.5001178562288704,
+    "mean": 2.532870481718429,
+    "std": 0.8974948552063097,
+    "min": 0.5017755133549483,
+    "max": 5.4850085352084035,
+    "q25": 1.9866621293089406,
+    "q75": 3.147142785601667
+  },
+  "not_classified": {
+    "count": 1291,
+    "median": 2.8750742091425665,
+    "mean": 2.9357802642967634
+  },
+  "comparison": {
+    "median_difference": 0.7210531109622256,
+    "median_difference_percent": 28.840764812977586,
+    "sba_premium": true
+  }
+}

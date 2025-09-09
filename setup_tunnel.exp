@@ -1,0 +1,16 @@
+#!/usr/bin/expect -f
+
+set timeout 10
+spawn ssh -N -L 3307:localhost:3306 forge@206.81.0.240
+expect {
+    "password:" {
+        send "mFGaHKEBBYLqpnUV3VUW\r"
+        expect eof
+    }
+    "yes/no" {
+        send "yes\r"
+        expect "password:"
+        send "mFGaHKEBBYLqpnUV3VUW\r"
+        expect eof
+    }
+}
